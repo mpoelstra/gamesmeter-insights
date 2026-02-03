@@ -4,6 +4,7 @@ export { GamerProfileCardComponent } from './gamer-profile-card/gamer-profile-ca
 export { GeneralStatsCardComponent } from './general-stats-card/general-stats-card.component';
 export { HiddenGemsCardComponent } from './hidden-gems-card/hidden-gems-card.component';
 export { HighestRatedYearsCardComponent } from './highest-rated-years-card/highest-rated-years-card.component';
+export { PlatformPeaksCardComponent } from './platform-peaks-card/platform-peaks-card.component';
 export { PlatformsCardComponent } from './platforms-card/platforms-card.component';
 export { RatingsDistributionCardComponent } from './ratings-distribution-card/ratings-distribution-card.component';
 export { TrendSummaryCardComponent } from './trend-summary-card/trend-summary-card.component';

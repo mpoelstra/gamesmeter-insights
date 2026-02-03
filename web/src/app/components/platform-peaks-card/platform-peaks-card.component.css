@@ -1,0 +1,64 @@
+.peaks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+
+.peaks-list {
+  display: grid;
+  gap: 12px;
+}
+
+.peak {
+  background: var(--bg-alt);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: grid;
+  gap: 8px;
+}
+
+.peak-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.name {
+  font-weight: 700;
+}
+
+.meta {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.bar {
+  height: 8px;
+  background: #ffffff;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #0f6b5f 0%, #0b4f47 100%);
+}
+
+.peak-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.avg {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.rating {
+  font-weight: 700;
+  color: var(--accent-strong);
+}
