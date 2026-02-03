@@ -1,7 +1,17 @@
 <article class="card">
-  <h3>Best Scoring Games Per Year</h3>
+  <div class="header">
+    <h3>Best Scoring Games Per Year</h3>
+    <label class="filter">
+      Year
+      <select [value]="yearFilter()" (change)="updateYear($any($event.target).value)">
+        @for (year of yearOptions; track year) {
+          <option [value]="year">{{ year === 'all' ? 'All years' : year }}</option>
+        }
+      </select>
+    </label>
+  </div>
   <div class="games">
-    @for (summary of summaries(); track summary.year) {
+    @for (summary of filteredSummaries(); track summary.year) {
       <div class="game-year">
         <div class="game-year-header">
           <span>{{ summary.year }}</span>
