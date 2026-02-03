@@ -1,0 +1,24 @@
+<article class="card">
+  <h3>Best Scoring Games Per Year</h3>
+  <div class="games">
+    @for (summary of summaries(); track summary.year) {
+      <div class="game-year">
+        <div class="game-year-header">
+          <span>{{ summary.year }}</span>
+          <span class="muted">Top {{ summary.topGames.length }} titles</span>
+        </div>
+        <div class="game-list">
+          @for (game of summary.topGames; track game.title) {
+            <div class="game-item">
+              <div>
+                <p class="game-title">{{ game.title }}</p>
+                <p class="muted">{{ game.platform ?? 'Platform unknown' }}</p>
+              </div>
+              <span class="rating">{{ game.rating?.toFixed(1) }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</article>

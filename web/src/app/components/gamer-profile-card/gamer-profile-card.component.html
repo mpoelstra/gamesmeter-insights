@@ -1,0 +1,12 @@
+<article class="card summary">
+  <h3>Gamer Profile</h3>
+  <p class="profile-title">{{ profile().title }}</p>
+  <p class="profile-subtitle">{{ profile().subtitle }}</p>
+  <p class="profile-lead">{{ profile().lead }}</p>
+  <p class="profile-description">{{ profile().description }}</p>
+  <div class="pill-row">
+    @for (trait of profile().traits; track trait) {
+      <span class="pill">{{ trait }}</span>
+    }
+  </div>
+</article>

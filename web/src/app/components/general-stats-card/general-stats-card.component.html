@@ -1,0 +1,27 @@
+<article class="card stats">
+  <h3>General Stats</h3>
+  <dl class="stat-list">
+    <div class="row">
+      <dt>Average rating</dt>
+      <dd>{{ formatRating(stats().average) }}</dd>
+    </div>
+    <div class="row">
+      <dt>Median rating</dt>
+      <dd>{{ formatRating(stats().median) }}</dd>
+    </div>
+    <div class="row">
+      <dt>Rating spread</dt>
+      <dd>{{ stats().min.toFixed(1) }}–{{ stats().max.toFixed(1) }}</dd>
+    </div>
+    <div class="row">
+      <dt>Std deviation</dt>
+      <dd>{{ stats().stdDev.toFixed(2) }}</dd>
+    </div>
+  </dl>
+  <div class="chart-block">
+    <div class="chart-canvas">
+      <canvas baseChart [type]="chartType" [data]="trendData" [options]="chartOptions"></canvas>
+    </div>
+    <p class="caption">{{ trend().summary }}</p>
+  </div>
+</article>

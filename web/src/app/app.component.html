@@ -1,0 +1,102 @@
+<div class="page">
+  <header class="hero">
+    <div>
+      <p class="eyebrow">GamesMeter Insights</p>
+      <h1>Your gaming life, quantified</h1>
+      <p class="subtitle">
+        Upload your GamesMeter CSV and get a professional report: trends, year leaders, rating habits, and a snapshot of
+        the gamer you are.
+      </p>
+    </div>
+    <div class="hero-panel">
+      <div class="upload">
+        <label class="upload-button" [class.has-file]="fileName() !== null">
+          <input type="file" accept=".csv" (change)="onFileSelected($event)" />
+          <span>{{ fileName() ?? 'Upload CSV' }}</span>
+        </label>
+        <button class="ghost" type="button" (click)="loadSample()">Use sample data</button>
+        @if (status() === 'ready') {
+          <button class="ghost" type="button" (click)="clearCache()">Clear data</button>
+        }
+      </div>
+      <div class="status" [class.error]="status() === 'error'">
+        {{ statusMessage() }}
+      </div>
+      @if (stats().total > 0) {
+        <div class="meta">
+          <span>{{ stats().total }} titles</span>
+          <span>{{ stats().ratedCount }} rated</span>
+          <span>Average {{ stats().average.toFixed(2) }}</span>
+        </div>
+      }
+    </div>
+  </header>
+
+  @if (stats().total > 0) {
+    <section class="tabs">
+      <button type="button" (click)="setTab('overview')" [class.active]="activeTab() === 'overview'">Overview</button>
+      <button type="button" (click)="setTab('years')" [class.active]="activeTab() === 'years'">Year Lens</button>
+      <button type="button" (click)="setTab('games')" [class.active]="activeTab() === 'games'">Best Games</button>
+      <button type="button" (click)="setTab('trends')" [class.active]="activeTab() === 'trends'">Trends</button>
+      <button type="button" (click)="setTab('gems')" [class.active]="activeTab() === 'gems'">Hidden Gems</button>
+      <button type="button" (click)="setTab('library')" [class.active]="activeTab() === 'library'">Game Library</button>
+    </section>
+  }
+
+  @if (stats().total === 0) {
+    <section class="empty">
+      <h2>No data yet</h2>
+      <p>Upload your GamesMeter CSV to generate the report. The data never leaves your browser.</p>
+    </section>
+  } @else {
+    @if (activeTab() === 'overview') {
+      <section class="panel">
+        <div class="grid">
+          <app-gamer-profile-card [profile]="profile()" />
+          <app-general-stats-card [stats]="stats()" [trend]="trend()" />
+        </div>
+
+        <div class="grid">
+          <app-ratings-distribution-card [stats]="stats()" />
+          <app-platforms-card [stats]="stats()" />
+        </div>
+      </section>
+    }
+
+    @if (activeTab() === 'years') {
+      <section class="panel">
+        <div class="grid">
+          <app-highest-rated-years-card [years]="highestRatedYears()" />
+          <app-year-averages-card [summaries]="yearSummaries()" />
+        </div>
+      </section>
+    }
+
+    @if (activeTab() === 'games') {
+      <section class="panel">
+        <app-best-games-card [summaries]="yearSummaries()" />
+      </section>
+    }
+
+    @if (activeTab() === 'trends') {
+      <section class="panel">
+        <div class="grid">
+          <app-trend-summary-card [trend]="trend()" />
+          <app-trend-timeline-card [summaries]="yearSummaries()" />
+        </div>
+      </section>
+    }
+
+    @if (activeTab() === 'gems') {
+      <section class="panel">
+        <app-hidden-gems-card />
+      </section>
+    }
+
+    @if (activeTab() === 'library') {
+      <section class="panel">
+        <app-games-library [rows]="allRows()" />
+      </section>
+    }
+  }
+</div>

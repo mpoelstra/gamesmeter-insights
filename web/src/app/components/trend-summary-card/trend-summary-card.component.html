@@ -1,0 +1,9 @@
+<article class="card">
+  <h3>Trend Summary</h3>
+  <p class="trend-summary">{{ trend().summary }}</p>
+  <div class="trend-metric">
+    <span>Yearly slope</span>
+    <span>{{ trend().slope.toFixed(3) }}</span>
+  </div>
+  <p class="muted">Positive means your scores rise over time; negative means you are rating more critically.</p>
+</article>

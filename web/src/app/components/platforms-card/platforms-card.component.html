@@ -1,0 +1,11 @@
+<article class="card platforms">
+  <h3>Top Platforms</h3>
+  <div class="platform-list">
+    @for (platform of stats().platformCounts.slice(0, 6); track platform.name) {
+      <div class="platform">
+        <span>{{ platform.name }}</span>
+        <span class="count">{{ platform.count }}</span>
+      </div>
+    }
+  </div>
+</article>

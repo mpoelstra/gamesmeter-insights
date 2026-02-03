@@ -1,0 +1,21 @@
+.chart {
+  display: grid;
+  gap: 16px;
+  height: 100%;
+}
+
+.chart-canvas {
+  height: 220px;
+  width: 100%;
+  min-width: 0;
+}
+
+.chart-canvas canvas {
+  max-width: 100%;
+}
+
+@media (max-width: 900px) {
+  .chart-canvas {
+    height: 200px;
+  }
+}

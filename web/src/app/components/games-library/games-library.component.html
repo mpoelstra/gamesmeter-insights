@@ -1,0 +1,78 @@
+<article class="library-layout" id="library-top">
+  <div class="card library-main">
+    <div class="library-header">
+      <h3>All Games</h3>
+      <p class="muted">Browse every title you have rated or logged, grouped alphabetically.</p>
+      <p class="summary">{{ filteredCount }} of {{ totalCount }} games shown</p>
+    </div>
+
+    <div class="filters">
+      <label>
+        Search
+        <input type="search" [value]="query()" (input)="updateQuery($any($event.target).value)" />
+      </label>
+      <label>
+        Platform
+        <select [value]="platformFilter()" (change)="updatePlatform($any($event.target).value)">
+          @for (platform of platforms; track platform) {
+            <option [value]="platform">{{ platform === 'all' ? 'All platforms' : platform }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        Year
+        <select [value]="yearFilter()" (change)="updateYear($any($event.target).value)">
+          @for (year of years; track year) {
+            <option [value]="year">{{ year === 'all' ? 'All years' : year }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        Rating
+        <select [value]="ratingFilter()" (change)="updateRating($any($event.target).value)">
+          @for (option of ratingOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    <div class="groups">
+      @for (group of groups; track trackByLetter($index, group)) {
+        <section class="group">
+          <div class="group-header" [attr.id]="'letter-' + group.letter">
+            <h4>{{ group.letter }}</h4>
+            <span class="count">{{ group.items.length }} games</span>
+          </div>
+          <div class="game-list">
+            @for (game of group.items; track trackByTitle($index, game)) {
+              <div class="game-item">
+                <div>
+                  <p class="game-title">
+                    @for (part of highlightParts(game.title); track part.text + part.match) {
+                      <span [class.highlight]="part.match">{{ part.text }}</span>
+                    }
+                  </p>
+                  <p class="muted">{{ game.platform ?? 'Platform unknown' }} · {{ game.year ?? 'Year unknown' }}</p>
+                </div>
+                <span class="rating">{{ game.rating?.toFixed(1) ?? '—' }}</span>
+              </div>
+            }
+          </div>
+        </section>
+      }
+    </div>
+  </div>
+
+  <aside class="card letter-card" aria-label="Alphabetical index">
+    <h4>Index</h4>
+    <nav class="letter-index">
+      @for (letter of indexLetters; track letter) {
+        <button type="button" (click)="scrollTo(letter)" [class.active]="activeLetter() === letter">
+          {{ letter }}
+        </button>
+      }
+    </nav>
+    <a class="jump-top" href="#library-top">Jump to top</a>
+  </aside>
+</article>

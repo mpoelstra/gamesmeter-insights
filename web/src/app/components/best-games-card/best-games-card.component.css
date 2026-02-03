@@ -1,0 +1,42 @@
+.games {
+  display: grid;
+  gap: 20px;
+}
+
+.game-year {
+  background: var(--bg-alt);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.game-year-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.game-list {
+  display: grid;
+  gap: 10px;
+}
+
+.game-item {
+  background: white;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.game-title {
+  margin: 0;
+  font-weight: 600;
+}
+
+.rating {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent-strong);
+}

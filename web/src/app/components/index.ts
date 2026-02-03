@@ -1,0 +1,11 @@
+export { BestGamesCardComponent } from './best-games-card/best-games-card.component';
+export { GamesLibraryComponent } from './games-library/games-library.component';
+export { GamerProfileCardComponent } from './gamer-profile-card/gamer-profile-card.component';
+export { GeneralStatsCardComponent } from './general-stats-card/general-stats-card.component';
+export { HiddenGemsCardComponent } from './hidden-gems-card/hidden-gems-card.component';
+export { HighestRatedYearsCardComponent } from './highest-rated-years-card/highest-rated-years-card.component';
+export { PlatformsCardComponent } from './platforms-card/platforms-card.component';
+export { RatingsDistributionCardComponent } from './ratings-distribution-card/ratings-distribution-card.component';
+export { TrendSummaryCardComponent } from './trend-summary-card/trend-summary-card.component';
+export { TrendTimelineCardComponent } from './trend-timeline-card/trend-timeline-card.component';
+export { YearAveragesCardComponent } from './year-averages-card/year-averages-card.component';

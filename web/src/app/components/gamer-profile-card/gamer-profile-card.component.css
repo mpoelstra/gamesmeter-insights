@@ -1,0 +1,45 @@
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+
+.profile-title {
+  font-size: 20px;
+  margin: 0;
+  font-weight: 600;
+}
+
+.profile-subtitle {
+  margin: 0;
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+
+.profile-description {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.profile-lead {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pill {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 600;
+}
