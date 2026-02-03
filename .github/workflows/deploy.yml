@@ -33,10 +33,24 @@ jobs:
         run: npm run build -- --configuration production --base-href /gamesmeter-insights/
         working-directory: web
 
+      - name: Resolve build output
+        id: out
+        run: |
+          if [ -d web/dist/gamesmeter/browser ]; then
+            echo "path=web/dist/gamesmeter/browser" >> "$GITHUB_OUTPUT"
+          elif [ -d web/dist/gamesmeter ]; then
+            echo "path=web/dist/gamesmeter" >> "$GITHUB_OUTPUT"
+          elif [ -d web/dist ]; then
+            echo "path=web/dist" >> "$GITHUB_OUTPUT"
+          else
+            echo "No build output found." >&2
+            exit 1
+          fi
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: web/dist/gamesmeter
+          path: ${{ steps.out.outputs.path }}
 
   deploy:
     needs: build
