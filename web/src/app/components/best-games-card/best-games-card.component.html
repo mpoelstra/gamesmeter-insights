@@ -17,17 +17,22 @@
           <span>{{ summary.year }}</span>
           <span class="muted">Top {{ summary.topGames.length }} titles</span>
         </div>
-        <div class="game-list">
-          @for (game of summary.topGames; track game.title) {
-            <div class="game-item">
-              <div>
-                <p class="game-title">{{ game.title }}</p>
-                <p class="muted">{{ game.platform ?? 'Platform unknown' }}</p>
+            <div class="game-list">
+            @for (game of summary.topGames; track game.title; let i = $index) {
+              <div class="game-item">
+                <div class="game-info">
+                  @if (rankLabel(i)) {
+                    <span class="rank" [attr.data-rank]="i + 1">{{ rankLabel(i) }}</span>
+                  }
+                  <div class="game-text">
+                    <p class="game-title">{{ game.title }}</p>
+                    <p class="muted">{{ game.platform ?? 'Platform unknown' }}</p>
+                  </div>
+                </div>
+                <span class="rating">{{ game.rating?.toFixed(1) }}</span>
               </div>
-              <span class="rating">{{ game.rating?.toFixed(1) }}</span>
+            }
             </div>
-          }
-        </div>
       </div>
     }
   </div>

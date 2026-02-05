@@ -29,4 +29,11 @@ export class BestGamesCardComponent {
   updateYear(value: string) {
     this.yearFilter.set(value);
   }
+
+  rankLabel(index: number): string {
+    if (index >= 0 && index <= 2) {
+      return String(index + 1);
+    }
+    return '';
+  }
 }

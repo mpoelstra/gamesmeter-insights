@@ -148,6 +148,10 @@ button.ghost:hover {
   gap: 24px;
 }
 
+.full-width {
+  width: 100%;
+}
+
 .grid {
   display: grid;
   gap: 24px;

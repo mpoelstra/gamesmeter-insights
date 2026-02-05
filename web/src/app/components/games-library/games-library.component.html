@@ -15,7 +15,9 @@
         Platform
         <select [value]="platformFilter()" (change)="updatePlatform($any($event.target).value)">
           @for (platform of platforms; track platform) {
-            <option [value]="platform">{{ platform === 'all' ? 'All platforms' : platform }}</option>
+            <option [value]="platform" [selected]="platformFilter() === platform">
+              {{ platform === 'all' ? 'All platforms' : platform }}
+            </option>
           }
         </select>
       </label>

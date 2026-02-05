@@ -9,6 +9,7 @@ import {
   HiddenGemsCardComponent,
   HighestRatedYearsCardComponent,
   PlatformPeaksCardComponent,
+  PlatformsDashboardComponent,
   RatingsDistributionCardComponent,
   TrendSummaryCardComponent,
   TrendTimelineCardComponent,
@@ -16,19 +17,19 @@ import {
 } from './components';
 
 const TAB_OVERVIEW = 'overview';
-const TAB_YEARS = 'years';
+const TAB_TIMELINE = 'timeline';
 const TAB_GAMES = 'games';
-const TAB_TRENDS = 'trends';
 const TAB_GEMS = 'gems';
 const TAB_LIBRARY = 'library';
+const TAB_PLATFORMS = 'platforms';
 
 type TabKey =
   | typeof TAB_OVERVIEW
-  | typeof TAB_YEARS
+  | typeof TAB_TIMELINE
   | typeof TAB_GAMES
-  | typeof TAB_TRENDS
   | typeof TAB_GEMS
-  | typeof TAB_LIBRARY;
+  | typeof TAB_LIBRARY
+  | typeof TAB_PLATFORMS;
 
 @Component({
   selector: 'app-root',
@@ -39,6 +40,7 @@ type TabKey =
     GeneralStatsCardComponent,
     RatingsDistributionCardComponent,
     PlatformPeaksCardComponent,
+    PlatformsDashboardComponent,
     HighestRatedYearsCardComponent,
     YearAveragesCardComponent,
     BestGamesCardComponent,
@@ -64,6 +66,7 @@ export class AppComponent {
   readonly yearSummaries = this.insights.yearSummaries;
   readonly highestRatedYears = this.insights.highestRatedYears;
   readonly allRows = this.insights.allRows;
+  readonly libraryPlatform = signal<string>('all');
 
   readonly statusMessage = computed(() => {
     switch (this.status()) {
@@ -78,11 +81,20 @@ export class AppComponent {
 
   setTab(tab: TabKey) {
     this.activeTab.set(tab);
+    if (tab === TAB_LIBRARY) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   clearCache() {
     this.insights.reset();
     this.activeTab.set(TAB_OVERVIEW);
+  }
+
+  openLibraryForPlatform(platform: string) {
+    this.libraryPlatform.set(platform);
+    this.activeTab.set(TAB_LIBRARY);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   async loadSample() {

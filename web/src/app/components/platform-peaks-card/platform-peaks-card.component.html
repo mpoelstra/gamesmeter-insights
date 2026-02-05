@@ -1,9 +1,14 @@
 <article class="card peaks">
-  <h3>Platform Peaks</h3>
-  <p class="muted">Average rating and volume by platform.</p>
+  <div class="head">
+    <div>
+      <h3>Platform Peaks</h3>
+      <p class="muted">Average rating and volume by platform.</p>
+    </div>
+    <span class="total">{{ totalPlatforms() }} platforms</span>
+  </div>
   <div class="peaks-list">
     @for (platform of peaks(); track platform.name) {
-      <div class="peak">
+      <button class="peak" type="button" (click)="selectPlatform(platform.name)">
         <div class="peak-head">
           <span class="name">{{ platform.name }}</span>
           <span class="meta">{{ platform.count }} games</span>
@@ -15,7 +20,7 @@
           <span class="avg">Avg {{ platform.average.toFixed(2) }}</span>
           <span class="rating">{{ platform.average.toFixed(1) }}</span>
         </div>
-      </div>
+      </button>
     }
   </div>
 </article>

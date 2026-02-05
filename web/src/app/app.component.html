@@ -35,9 +35,9 @@
   @if (stats().total > 0) {
     <section class="tabs">
       <button type="button" (click)="setTab('overview')" [class.active]="activeTab() === 'overview'">Overview</button>
-      <button type="button" (click)="setTab('years')" [class.active]="activeTab() === 'years'">Year Lens</button>
+      <button type="button" (click)="setTab('timeline')" [class.active]="activeTab() === 'timeline'">Timeline</button>
+      <button type="button" (click)="setTab('platforms')" [class.active]="activeTab() === 'platforms'">Platforms</button>
       <button type="button" (click)="setTab('games')" [class.active]="activeTab() === 'games'">Best Games</button>
-      <button type="button" (click)="setTab('trends')" [class.active]="activeTab() === 'trends'">Trends</button>
       <button type="button" (click)="setTab('gems')" [class.active]="activeTab() === 'gems'">Hidden Gems</button>
       <button type="button" (click)="setTab('library')" [class.active]="activeTab() === 'library'">Game Library</button>
     </section>
@@ -56,19 +56,31 @@
           <app-general-stats-card [stats]="stats()" [trend]="trend()" />
         </div>
 
-        <div class="grid">
-          <app-ratings-distribution-card [stats]="stats()" />
-          <app-platform-peaks-card [rows]="allRows()" />
+        <div class="full-width">
+          <app-platform-peaks-card [rows]="allRows()" (platformSelected)="openLibraryForPlatform($event)" />
         </div>
       </section>
     }
 
-    @if (activeTab() === 'years') {
+    @if (activeTab() === 'timeline') {
       <section class="panel">
         <div class="grid">
           <app-highest-rated-years-card [years]="highestRatedYears()" />
           <app-year-averages-card [summaries]="yearSummaries()" />
         </div>
+        <div class="grid">
+          <app-trend-summary-card [trend]="trend()" />
+          <app-trend-timeline-card [summaries]="yearSummaries()" />
+        </div>
+        <div class="full-width">
+          <app-ratings-distribution-card [stats]="stats()" />
+        </div>
+      </section>
+    }
+
+    @if (activeTab() === 'platforms') {
+      <section class="panel">
+        <app-platforms-dashboard [rows]="allRows()" />
       </section>
     }
 
@@ -78,14 +90,6 @@
       </section>
     }
 
-    @if (activeTab() === 'trends') {
-      <section class="panel">
-        <div class="grid">
-          <app-trend-summary-card [trend]="trend()" />
-          <app-trend-timeline-card [summaries]="yearSummaries()" />
-        </div>
-      </section>
-    }
 
     @if (activeTab() === 'gems') {
       <section class="panel">
@@ -95,7 +99,7 @@
 
     @if (activeTab() === 'library') {
       <section class="panel">
-        <app-games-library [rows]="allRows()" />
+        <app-games-library [rows]="allRows()" [initialPlatform]="libraryPlatform()" />
       </section>
     }
   }

@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, OnChanges, OnDestroy, SimpleChanges, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, afterRenderEffect, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VoteRow } from '../../models';
 
@@ -15,8 +15,9 @@ interface GameGroup {
   templateUrl: './games-library.component.html',
   styleUrls: ['./games-library.component.css'],
 })
-export class GamesLibraryComponent implements AfterViewInit, OnChanges, OnDestroy {
+export class GamesLibraryComponent implements OnDestroy {
   readonly rows = input.required<VoteRow[]>();
+  readonly initialPlatform = input<string>('all');
   readonly query = signal('');
   readonly platformFilter = signal('all');
   readonly ratingFilter = signal<string>('all');
@@ -25,6 +26,7 @@ export class GamesLibraryComponent implements AfterViewInit, OnChanges, OnDestro
   private observer: IntersectionObserver | null = null;
   private isAutoScrolling = false;
   private autoScrollTarget: string | null = null;
+  private readonly appliedInitial = signal(false);
 
   get filteredRows(): VoteRow[] {
     const query = this.query().trim().toLowerCase();
@@ -165,16 +167,27 @@ export class GamesLibraryComponent implements AfterViewInit, OnChanges, OnDestro
     this.setupObserver();
   }
 
-  ngAfterViewInit(): void {
-    this.setupObserver();
-    this.updateActiveFromCurrentScroll();
-  }
+  constructor() {
+    afterRenderEffect(() => {
+      if (this.appliedInitial()) {
+        return;
+      }
+      const platform = this.initialPlatform();
+      if (platform && platform !== 'all' && platform !== this.platformFilter()) {
+        this.platformFilter.set(platform);
+      }
+      this.appliedInitial.set(true);
+    });
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['rows']) {
+    afterRenderEffect(() => {
+      this.rows();
+      this.query();
+      this.platformFilter();
+      this.ratingFilter();
+      this.yearFilter();
       this.setupObserver();
       this.updateActiveFromCurrentScroll();
-    }
+    });
   }
 
   ngOnDestroy(): void {

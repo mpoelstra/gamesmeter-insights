@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VoteRow } from '../../models';
 
@@ -18,6 +18,7 @@ interface PlatformPeak {
 })
 export class PlatformPeaksCardComponent {
   readonly rows = input.required<VoteRow[]>();
+  readonly platformSelected = output<string>();
 
   readonly peaks = computed<PlatformPeak[]>(() => {
     const map = new Map<string, { total: number; count: number }>();
@@ -38,11 +39,16 @@ export class PlatformPeaksCardComponent {
         count: data.count,
         average: data.total / Math.max(data.count, 1),
       }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 6);
+      .sort((a, b) => b.count - a.count);
   });
+
+  readonly totalPlatforms = computed(() => this.peaks().length);
 
   barWidth(value: number): number {
     return Math.max(0, Math.min(100, (value / 5) * 100));
+  }
+
+  selectPlatform(platform: string) {
+    this.platformSelected.emit(platform);
   }
 }

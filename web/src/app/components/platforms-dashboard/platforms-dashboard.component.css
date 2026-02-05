@@ -1,0 +1,79 @@
+.platforms {
+  display: grid;
+  gap: 24px;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.chart {
+  height: 320px;
+  width: 100%;
+  min-width: 0;
+}
+
+.chart canvas {
+  max-width: 100%;
+}
+
+.note {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.signatures {
+  display: grid;
+  gap: 16px;
+}
+
+.signature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.sig {
+  background: var(--bg-alt);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+
+.label {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 11px;
+  color: var(--muted);
+  margin: 0 0 6px;
+}
+
+.value {
+  margin: 0;
+  font-weight: 700;
+}
+
+.era-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.era {
+  background: var(--bg-alt);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+
+.era.low {
+  border: 1px dashed rgba(201, 90, 79, 0.35);
+}
+
+@media (max-width: 900px) {
+  .chart {
+    height: 260px;
+  }
+}
