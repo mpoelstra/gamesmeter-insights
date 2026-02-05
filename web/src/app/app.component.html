@@ -38,6 +38,7 @@
       <button type="button" (click)="setTab('timeline')" [class.active]="activeTab() === 'timeline'">Timeline</button>
       <button type="button" (click)="setTab('platforms')" [class.active]="activeTab() === 'platforms'">Platforms</button>
       <button type="button" (click)="setTab('games')" [class.active]="activeTab() === 'games'">Best Games</button>
+      <button type="button" (click)="setTab('fun')" [class.active]="activeTab() === 'fun'">Fun Stats</button>
       <button type="button" (click)="setTab('gems')" [class.active]="activeTab() === 'gems'">Hidden Gems</button>
       <button type="button" (click)="setTab('library')" [class.active]="activeTab() === 'library'">Game Library</button>
     </section>
@@ -81,6 +82,12 @@
     @if (activeTab() === 'platforms') {
       <section class="panel">
         <app-platforms-dashboard [rows]="allRows()" />
+      </section>
+    }
+
+    @if (activeTab() === 'fun') {
+      <section class="panel">
+        <app-fun-stats-dashboard [rows]="allRows()" />
       </section>
     }
 

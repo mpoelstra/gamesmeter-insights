@@ -1,5 +1,6 @@
 export { BestGamesCardComponent } from './best-games-card/best-games-card.component';
 export { GamesLibraryComponent } from './games-library/games-library.component';
+export { FunStatsDashboardComponent } from './fun-stats-dashboard/fun-stats-dashboard.component';
 export { GamerProfileCardComponent } from './gamer-profile-card/gamer-profile-card.component';
 export { GeneralStatsCardComponent } from './general-stats-card/general-stats-card.component';
 export { HiddenGemsCardComponent } from './hidden-gems-card/hidden-gems-card.component';

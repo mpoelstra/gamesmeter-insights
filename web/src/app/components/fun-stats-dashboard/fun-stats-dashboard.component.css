@@ -1,0 +1,158 @@
+.fun {
+  display: grid;
+  gap: 24px;
+}
+
+.grid {
+  display: grid;
+  gap: 24px;
+  align-items: stretch;
+  grid-auto-flow: dense;
+}
+
+.grid.four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 1200px) {
+  .grid.four {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .grid.four {
+    grid-template-columns: 1fr;
+  }
+}
+
+.value {
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+
+.card {
+  height: 300px;
+}
+
+.rituals {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 6px;
+  align-items: end;
+  height: 170px;
+  margin-top: 8px;
+}
+
+.rituals.rituals-weekday {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  width: 100%;
+}
+
+.rituals.rituals-year {
+  grid-template-columns: repeat(auto-fit, minmax(24px, 1fr));
+  row-gap: 10px;
+}
+
+.ritual-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: nowrap;
+  margin-bottom: 6px;
+}
+
+.ritual-head h3 {
+  margin: 0;
+}
+
+.ritual-controls {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  align-items: center;
+}
+
+.ritual-controls .chip {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  color: var(--muted);
+  padding: 3px 6px;
+  border-radius: 999px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.ritual-controls .chip.active {
+  border-color: var(--accent);
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.month {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+  height: 100%;
+  text-align: center;
+}
+
+.month .bar {
+  width: 100%;
+  background: var(--accent-soft);
+  border-radius: 6px 6px 4px 4px;
+  min-height: 4px;
+}
+
+.month .label {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.rituals.rituals-year .month .label {
+  font-size: 9px;
+}
+
+.mini-bars {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 6px;
+  align-items: end;
+  height: 120px;
+  margin-top: 12px;
+}
+
+.mini-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+  height: 100%;
+  text-align: center;
+}
+
+.mini-bar .bar {
+  width: 100%;
+  background: var(--accent);
+  border-radius: 6px 6px 4px 4px;
+  min-height: 4px;
+  opacity: 0.8;
+}
+
+.mini-bar .label {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+@media (max-width: 900px) {
+  .rituals {
+    height: 90px;
+  }
+
+  .mini-bars {
+    height: 100px;
+  }
+}

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { InsightsService } from './services/insights.service';
 import {
   BestGamesCardComponent,
+  FunStatsDashboardComponent,
   GamerProfileCardComponent,
   GamesLibraryComponent,
   GeneralStatsCardComponent,
@@ -22,6 +23,7 @@ const TAB_GAMES = 'games';
 const TAB_GEMS = 'gems';
 const TAB_LIBRARY = 'library';
 const TAB_PLATFORMS = 'platforms';
+const TAB_FUN = 'fun';
 
 type TabKey =
   | typeof TAB_OVERVIEW
@@ -29,7 +31,8 @@ type TabKey =
   | typeof TAB_GAMES
   | typeof TAB_GEMS
   | typeof TAB_LIBRARY
-  | typeof TAB_PLATFORMS;
+  | typeof TAB_PLATFORMS
+  | typeof TAB_FUN;
 
 @Component({
   selector: 'app-root',
@@ -43,7 +46,8 @@ type TabKey =
     PlatformsDashboardComponent,
     HighestRatedYearsCardComponent,
     YearAveragesCardComponent,
-    BestGamesCardComponent,
+  BestGamesCardComponent,
+    FunStatsDashboardComponent,
     TrendSummaryCardComponent,
     TrendTimelineCardComponent,
     HiddenGemsCardComponent,

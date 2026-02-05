@@ -27,37 +27,6 @@
 
   <div class="card">
     <div class="head">
-      <h3>Platform Timeline Ribbons</h3>
-      <p class="muted">Average rating per platform over time.</p>
-    </div>
-    <div class="chart">
-      <canvas baseChart [type]="chartTypeLine" [data]="ribbonData" [options]="ribbonOptions"></canvas>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="head">
-      <h3>Era Bands</h3>
-      <p class="muted">Platform volume over time (stacked).</p>
-    </div>
-    <div class="chart">
-      <canvas baseChart [type]="chartTypeLine" [data]="eraBandsData" [options]="eraBandsOptions"></canvas>
-    </div>
-    <p class="note">Note: eras are based on each game’s original release year, not when you rated it.</p>
-  </div>
-
-  <div class="card">
-    <div class="head">
-      <h3>Platform Drift</h3>
-      <p class="muted">Bubble size = games, height = average rating.</p>
-    </div>
-    <div class="chart">
-      <canvas baseChart [type]="chartTypeBubble" [data]="bubbleData" [options]="bubbleOptions"></canvas>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="head">
       <h3>Era Peaks</h3>
       <p class="muted">Most played platform per decade.</p>
     </div>
@@ -85,6 +54,37 @@
           <p class="muted">Avg {{ era.average.toFixed(2) }} · {{ era.count }} games</p>
         </div>
       }
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="head">
+      <h3>Platform Timeline Ribbons</h3>
+      <p class="muted">Average rating per platform over time.</p>
+    </div>
+    <div class="chart">
+      <canvas baseChart [type]="chartTypeLine" [data]="ribbonData" [options]="ribbonOptions"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="head">
+      <h3>Era Bands</h3>
+      <p class="muted">Platform volume over time (stacked).</p>
+    </div>
+    <div class="chart">
+      <canvas baseChart [type]="chartTypeLine" [data]="eraBandsData" [options]="eraBandsOptions"></canvas>
+    </div>
+    <p class="note">Note: eras are based on each game’s original release year, not when you rated it.</p>
+  </div>
+
+  <div class="card">
+    <div class="head">
+      <h3>Platform Drift</h3>
+      <p class="muted">Bubble size = games, height = average rating.</p>
+    </div>
+    <div class="chart">
+      <canvas baseChart [type]="chartTypeBubble" [data]="bubbleData" [options]="bubbleOptions"></canvas>
     </div>
   </div>
 </article>

@@ -1,0 +1,165 @@
+<section class="fun">
+  <div class="grid four">
+    <article class="card">
+      <h3>First & Last</h3>
+      @if (firstLast()) {
+        <p class="value">{{ firstLast()!.first.title }}</p>
+        <p class="muted">First rated {{ firstLast()!.first.placed?.toLocaleDateString() }}</p>
+        <p class="value">{{ firstLast()!.last.title }}</p>
+        <p class="muted">Latest rated {{ firstLast()!.last.placed?.toLocaleDateString() }}</p>
+      } @else {
+        <p class="muted">No rating dates found yet.</p>
+      }
+    </article>
+
+    <article class="card">
+      <h3>Longest Gap</h3>
+      @if (longestGap()) {
+        <p class="value">{{ longestGap()!.days }} days</p>
+        <p class="muted">No ratings between {{ longestGap()!.from.toLocaleDateString() }} and {{ longestGap()!.to.toLocaleDateString() }}.</p>
+      } @else {
+        <p class="muted">Not enough data to measure gaps.</p>
+      }
+    </article>
+
+    <article class="card">
+      <h3>Taste Shift</h3>
+      @if (tasteShift()) {
+        <p class="value">
+          {{ tasteShift()!.delta >= 0 ? '⬆' : '⬇' }} {{ tasteShift()!.delta.toFixed(2) }}
+        </p>
+        <p class="muted">Compared to the previous year.</p>
+      } @else {
+        <p class="muted">Not enough years to measure shift.</p>
+      }
+    </article>
+
+    <article class="card">
+      <h3>Platform Personality</h3>
+      <p class="value">{{ platformPersonality() ?? 'Loading...' }}</p>
+      <p class="muted">Based on your most played platform.</p>
+    </article>
+    
+    <article class="card">
+      <div class="ritual-head">
+        <h3>Rating Rituals</h3>
+        <div class="ritual-controls" role="tablist" aria-label="Rating ritual view">
+          <button
+            class="chip"
+            type="button"
+            [class.active]="ritualView() === 'month'"
+            (click)="ritualView.set('month')"
+          >
+            Month
+          </button>
+          <button
+            class="chip"
+            type="button"
+            [class.active]="ritualView() === 'weekday'"
+            (click)="ritualView.set('weekday')"
+          >
+            Weekday
+          </button>
+          <button
+            class="chip"
+            type="button"
+            [class.active]="ritualView() === 'year'"
+            (click)="ritualView.set('year')"
+          >
+            Year
+          </button>
+        </div>
+      </div>
+      <p class="muted">Busiest: {{ busiestRitual().label }}.</p>
+      <div
+        class="rituals"
+        [class.rituals-year]="ritualView() === 'year'"
+        [class.rituals-weekday]="ritualView() === 'weekday'"
+      >
+        @for (item of ritualStats(); track item.label) {
+          <div class="month">
+            <span class="bar" [style.height.%]="barHeight(item.count)"></span>
+            <span class="label">{{ item.label }}</span>
+          </div>
+        }
+      </div>
+    </article>
+
+    <article class="card">
+      <h3>Weekday Metrics</h3>
+      <p class="muted">
+        You rate the most often on:
+        <strong>{{ weekdayMetrics().busiest.label }}</strong>
+        ({{ weekdayMetrics().busiest.count }}).
+      </p>
+      <p class="muted">
+        You rate the least often on:
+        <strong>{{ weekdayMetrics().quietest.label }}</strong>
+        ({{ weekdayMetrics().quietest.count }}).
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Busiest Date</h3>
+      @if (busiestDate()) {
+        <p class="value">{{ busiestDate()!.date.toLocaleDateString() }}</p>
+        <p class="muted">{{ busiestDate()!.count }} ratings on that day.</p>
+      } @else {
+        <p class="muted">No rating dates found yet.</p>
+      }
+    </article>
+
+    <article class="card">
+      <h3>Same‑Score Streak</h3>
+      @if (ratingStreak()) {
+        <p class="value">{{ ratingStreak()!.length }} in a row</p>
+        <p class="muted">Longest streak at {{ ratingStreak()!.rating.toFixed(1) }}.</p>
+        <p class="muted">
+          {{ ratingStreak()!.start.toLocaleDateString() }} – {{ ratingStreak()!.end.toLocaleDateString() }}
+        </p>
+      } @else {
+        <p class="muted">No streak data yet.</p>
+      }
+    </article>
+    
+    <article class="card">
+      <h3>Most Replayed Franchise</h3>
+      @if (mostReplayedFranchise()) {
+        <p class="value">{{ mostReplayedFranchise()!.name }}</p>
+        <p class="muted">{{ mostReplayedFranchise()!.count }} titles in your library.</p>
+      } @else {
+        <p class="muted">No franchise data yet.</p>
+      }
+    </article>
+
+    <article class="card">
+      <h3>Most Polarizing Year</h3>
+      @if (mostPolarizingYear()) {
+        <p class="value">{{ mostPolarizingYear()!.year }}</p>
+        <p class="muted">Spread {{ mostPolarizingYear()!.stdDev.toFixed(2) }} across {{ mostPolarizingYear()!.count }} ratings.</p>
+      } @else {
+        <p class="muted">Not enough ratings to measure.</p>
+      }
+    </article>
+
+    <article class="card">
+      <h3>Peak Year</h3>
+      @if (busiestYear()) {
+        <p class="value">{{ busiestYear()!.year }}</p>
+        <p class="muted">{{ busiestYear()!.count }} ratings that year.</p>
+      } @else {
+        <p class="muted">No year data yet.</p>
+      }
+    </article>
+
+    <article class="card">
+      <h3>Epic Title</h3>
+      @if (longestTitle()) {
+        <p class="value">{{ longestTitle()!.title }}</p>
+        <p class="muted">{{ longestTitle()!.length }} characters long.</p>
+      } @else {
+        <p class="muted">No titles found yet.</p>
+      }
+    </article>
+  </div>
+</section>
