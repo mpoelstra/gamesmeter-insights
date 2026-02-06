@@ -4,11 +4,12 @@ import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { YearSummary } from '../../models';
 import { I18nService } from '../../i18n.service';
+import { ChartCardComponent } from '../../shared/chart-card/chart-card.component';
 
 @Component({
   selector: 'app-highest-rated-years-card',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective],
+  imports: [CommonModule, BaseChartDirective, ChartCardComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './highest-rated-years-card.component.html',
   styleUrls: ['./highest-rated-years-card.component.css'],

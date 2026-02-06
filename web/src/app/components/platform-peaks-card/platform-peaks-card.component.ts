@@ -5,6 +5,7 @@ import { I18nService } from '../../i18n.service';
 import { getPlatformImage, PlatformImage } from '../../platform-images';
 import { PlatformLogoComponent } from '../../shared/platform-logo/platform-logo.component';
 import { PlatformPeakItemComponent } from '../../shared/platform-peak-item/platform-peak-item.component';
+import { SectionHeaderComponent } from '../../shared/section-header/section-header.component';
 
 interface PlatformPeak {
   name: string;
@@ -15,7 +16,7 @@ interface PlatformPeak {
 @Component({
   selector: 'app-platform-peaks-card',
   standalone: true,
-  imports: [CommonModule, PlatformLogoComponent, PlatformPeakItemComponent],
+  imports: [CommonModule, PlatformLogoComponent, PlatformPeakItemComponent, SectionHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './platform-peaks-card.component.html',
   styleUrls: ['./platform-peaks-card.component.css'],

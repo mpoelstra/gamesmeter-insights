@@ -1,11 +1,10 @@
 <article class="card peaks">
-  <div class="head">
-    <div>
-      <h3>{{ i18n.t('card.platformPeaks') }}</h3>
-      <p class="muted">{{ i18n.t('platformPeaks.subtitle') }}</p>
-    </div>
+  <app-section-header
+    [title]="i18n.t('card.platformPeaks')"
+    [subtitle]="i18n.t('platformPeaks.subtitle')"
+  >
     <span class="total">{{ i18n.t('platformPeaks.platforms', { count: totalPlatforms() }) }}</span>
-  </div>
+  </app-section-header>
   <div class="peaks-list">
     @for (platform of peaks(); track platform.name) {
       <app-platform-peak-item

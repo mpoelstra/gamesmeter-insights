@@ -5,11 +5,12 @@ import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { GeneralStats, TrendInsight } from '../../models';
 import { formatRating } from '../../insights';
 import { I18nService } from '../../i18n.service';
+import { SectionHeaderComponent } from '../../shared/section-header/section-header.component';
 
 @Component({
   selector: 'app-general-stats-card',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective],
+  imports: [CommonModule, BaseChartDirective, SectionHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './general-stats-card.component.html',
   styleUrls: ['./general-stats-card.component.css'],

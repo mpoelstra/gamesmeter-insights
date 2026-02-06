@@ -1,5 +1,5 @@
 <article class="card">
-  <h3>{{ i18n.t('card.trendSummary') }}</h3>
+  <app-section-header [title]="i18n.t('card.trendSummary')"></app-section-header>
   <p class="trend-summary">{{ trend().summary }}</p>
   <div class="trend-metric">
     <span>{{ i18n.t('trend.yearlySlope') }}</span>

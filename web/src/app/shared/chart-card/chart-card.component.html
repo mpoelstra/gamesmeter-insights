@@ -1,0 +1,7 @@
+<article class="card chart-card">
+  <app-section-header [title]="title()" [subtitle]="subtitle()">
+    <ng-content select="[card-actions]"></ng-content>
+  </app-section-header>
+  <ng-content></ng-content>
+  <ng-content select="[card-note]"></ng-content>
+</article>

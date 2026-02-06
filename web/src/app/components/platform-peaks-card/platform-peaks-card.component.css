@@ -5,13 +5,6 @@
   height: 100%;
 }
 
-.head {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: flex-start;
-}
-
 .total {
   font-weight: 700;
   color: #6b4f00;
@@ -19,10 +12,6 @@
   border: 1px solid rgba(216, 164, 42, 0.4);
   padding: 6px 10px;
   border-radius: 999px;
-  white-space: nowrap;
-}
-
-.toggle {
   white-space: nowrap;
 }
 

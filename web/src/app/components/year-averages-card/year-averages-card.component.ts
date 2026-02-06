@@ -4,11 +4,12 @@ import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { YearSummary } from '../../models';
 import { I18nService } from '../../i18n.service';
+import { ChartCardComponent } from '../../shared/chart-card/chart-card.component';
 
 @Component({
   selector: 'app-year-averages-card',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective],
+  imports: [CommonModule, BaseChartDirective, ChartCardComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './year-averages-card.component.html',
   styleUrls: ['./year-averages-card.component.css'],
