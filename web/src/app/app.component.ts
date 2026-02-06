@@ -108,6 +108,10 @@ export class AppComponent {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  clearLibraryPlatform() {
+    this.libraryPlatform.set('all');
+  }
+
   async loadSample() {
     try {
       const response = await fetch('assets/sample.csv');

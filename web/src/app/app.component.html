@@ -136,7 +136,11 @@
 
     @if (activeTab() === 'library') {
       <section class="panel">
-        <app-games-library [rows]="allRows()" [initialPlatform]="libraryPlatform()" />
+        <app-games-library
+          [rows]="allRows()"
+          [initialPlatform]="libraryPlatform()"
+          (initialPlatformConsumed)="clearLibraryPlatform()"
+        />
       </section>
     }
   }

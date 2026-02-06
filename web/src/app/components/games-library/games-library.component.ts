@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, afterRenderEffect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, afterRenderEffect, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VoteRow } from '../../models';
 import { I18nService } from '../../i18n.service';
@@ -14,6 +14,7 @@ import { I18nService } from '../../i18n.service';
 export class GamesLibraryComponent {
   readonly rows = input.required<VoteRow[]>();
   readonly initialPlatform = input<string>('all');
+  readonly initialPlatformConsumed = output<void>();
   readonly i18n = inject(I18nService);
   readonly query = signal('');
   readonly platformFilter = signal('all');
@@ -31,7 +32,7 @@ export class GamesLibraryComponent {
     const yearFilter = this.yearFilter();
     const ratedYearFilter = this.ratedYearFilter();
     const letterFilter = this.letterFilter();
-    const minRating = ratingFilter === 'all' ? null : Number(ratingFilter);
+    const exactRating = ratingFilter === 'all' ? null : Number(ratingFilter);
 
     return this.rows().filter(row => {
       const matchesQuery = query.length === 0 || row.title.toLowerCase().includes(query);
@@ -42,7 +43,7 @@ export class GamesLibraryComponent {
       const letter = firstLetter(row.title);
       const matchesLetter = letterFilter === 'all' || letter === letterFilter;
       const rating = row.rating ?? 0;
-      const matchesRating = minRating === null ? true : rating >= minRating;
+      const matchesRating = exactRating === null ? true : rating === exactRating;
       return matchesQuery && matchesPlatform && matchesRating && matchesYear && matchesRatedYear && matchesLetter;
     });
   }
@@ -95,6 +96,21 @@ export class GamesLibraryComponent {
 
   trackByTitle(index: number, row: VoteRow): string {
     return `${row.title}-${row.year ?? 'x'}-${row.platform ?? 'x'}`;
+  }
+
+  getStarStates(rating: number | null): Array<'full' | 'half' | 'empty'> {
+    const value = rating ?? 0;
+    const states: Array<'full' | 'half' | 'empty'> = [];
+    for (let i = 1; i <= 5; i += 1) {
+      if (value >= i) {
+        states.push('full');
+      } else if (value >= i - 0.5) {
+        states.push('half');
+      } else {
+        states.push('empty');
+      }
+    }
+    return states;
   }
 
   get totalCount(): number {
@@ -172,10 +188,7 @@ export class GamesLibraryComponent {
       { label: this.i18n.t('filters.allRatings'), value: 'all' },
     ];
     for (let value = 5; value >= 0.5; value -= 0.5) {
-      const label =
-        value === 5
-          ? this.i18n.t('filters.ratingOnly', { value: value.toFixed(1) })
-          : this.i18n.t('filters.ratingAndAbove', { value: value.toFixed(1) });
+      const label = this.i18n.t('filters.ratingOnly', { value: value.toFixed(1) });
       options.push({ label, value: value.toFixed(1) });
     }
     return options;
@@ -203,6 +216,7 @@ export class GamesLibraryComponent {
       const platform = this.initialPlatform();
       if (platform && platform !== 'all' && platform !== this.platformFilter()) {
         this.platformFilter.set(platform);
+        this.initialPlatformConsumed.emit();
       }
       this.appliedInitial.set(true);
     });
