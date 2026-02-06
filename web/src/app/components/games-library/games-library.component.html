@@ -83,10 +83,15 @@
                   <span [class.highlight]="part.match">{{ part.text }}</span>
                 }
               </p>
-              <p class="muted">
-                {{ game.platform ?? i18n.t('label.platformUnknown') }} ·
-                {{ game.year ?? i18n.t('label.yearUnknown') }}
+            <p class="muted">
+              {{ game.platform ?? i18n.t('label.platformUnknown') }} ·
+              {{ game.year ?? i18n.t('label.yearUnknown') }}
+            </p>
+            @if (game.placed) {
+              <p class="muted rated-line">
+                {{ i18n.t('label.ratedOn') }} {{ i18n.formatDate(game.placed) }}
               </p>
+            }
             </div>
             <div class="rating-stars" [attr.aria-label]="game.rating?.toFixed(1) ?? i18n.t('label.na')">
               @for (state of getStarStates(game.rating); track $index) {

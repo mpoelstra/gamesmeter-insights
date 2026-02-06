@@ -176,6 +176,11 @@
   margin: 0;
 }
 
+.rated-line {
+  font-size: 12px;
+  color: #8ea3a1;
+}
+
 .highlight {
   background: rgba(15, 107, 95, 0.25);
   border-radius: 6px;

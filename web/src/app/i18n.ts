@@ -89,6 +89,7 @@ export const translations: Record<Lang, TranslationDict> = {
     'filters.allRatedYears': 'All rated years',
     'bestGames.topTitles': 'Top {count} titles',
     'label.platformUnknown': 'Platform unknown',
+    'label.ratedOn': 'Rated on',
     'hiddenGems.title': 'Hidden Gems (coming next)',
     'hiddenGems.body':
       'This section will compare your ratings against public sources like IGDB and Metacritic. The first version focuses on your own data only. When you are ready, we can add a server-side proxy to query external APIs securely.',
@@ -293,6 +294,7 @@ export const translations: Record<Lang, TranslationDict> = {
     'filters.allRatedYears': 'Alle beoordelingsjaren',
     'bestGames.topTitles': 'Top {count} titels',
     'label.platformUnknown': 'Platform onbekend',
+    'label.ratedOn': 'Beoordeeld op',
     'hiddenGems.title': 'Verborgen parels (komt later)',
     'hiddenGems.body':
       'Dit onderdeel vergelijkt je scores met openbare bronnen zoals IGDB en Metacritic. De eerste versie focust alleen op je eigen data. Als je wilt kunnen we later een server-side proxy toevoegen om externe API’s veilig te raadplegen.',
