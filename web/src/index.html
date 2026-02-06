@@ -8,6 +8,10 @@
     <meta name="color-scheme" content="light" />
     <script>
       (function (l) {
+        // If we arrived via the 404 redirect, the URL looks like:
+        //   https://host/<repo>/?/timeline&foo=bar#hash
+        // We rebuild it back to:
+        //   https://host/<repo>/timeline?foo=bar#hash
         if (l.search && l.search[1] === '/') {
           var decoded = l.search
             .slice(1)
