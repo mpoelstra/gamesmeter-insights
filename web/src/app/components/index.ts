@@ -8,6 +8,7 @@ export { HighestRatedYearsCardComponent } from './highest-rated-years-card/highe
 export { PlatformPeaksCardComponent } from './platform-peaks-card/platform-peaks-card.component';
 export { PlatformsDashboardComponent } from './platforms-dashboard/platforms-dashboard.component';
 export { RatingsDistributionCardComponent } from './ratings-distribution-card/ratings-distribution-card.component';
+export { SnakeGameComponent } from './snake-game/snake-game.component';
 export { TrendSummaryCardComponent } from './trend-summary-card/trend-summary-card.component';
 export { TrendTimelineCardComponent } from './trend-timeline-card/trend-timeline-card.component';
 export { YearAveragesCardComponent } from './year-averages-card/year-averages-card.component';

@@ -13,6 +13,7 @@ import {
   PlatformPeaksCardComponent,
   PlatformsDashboardComponent,
   RatingsDistributionCardComponent,
+  SnakeGameComponent,
   TrendSummaryCardComponent,
   TrendTimelineCardComponent,
   YearAveragesCardComponent,
@@ -25,6 +26,7 @@ const TAB_GEMS = 'gems';
 const TAB_LIBRARY = 'library';
 const TAB_PLATFORMS = 'platforms';
 const TAB_FUN = 'fun';
+const TAB_SNAKE = 'snake';
 
 type TabKey =
   | typeof TAB_OVERVIEW
@@ -33,7 +35,8 @@ type TabKey =
   | typeof TAB_GEMS
   | typeof TAB_LIBRARY
   | typeof TAB_PLATFORMS
-  | typeof TAB_FUN;
+  | typeof TAB_FUN
+  | typeof TAB_SNAKE;
 
 @Component({
   selector: 'app-root',
@@ -47,12 +50,13 @@ type TabKey =
     PlatformsDashboardComponent,
     HighestRatedYearsCardComponent,
     YearAveragesCardComponent,
-  BestGamesCardComponent,
+    BestGamesCardComponent,
     FunStatsDashboardComponent,
     TrendSummaryCardComponent,
     TrendTimelineCardComponent,
     HiddenGemsCardComponent,
     GamesLibraryComponent,
+    SnakeGameComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.component.html',
@@ -73,6 +77,7 @@ export class AppComponent {
   readonly highestRatedYears = this.insights.highestRatedYears;
   readonly allRows = this.insights.allRows;
   readonly libraryPlatform = signal<string>('all');
+  constructor() {}
 
   readonly statusMessage = computed(() => {
     switch (this.status()) {
@@ -134,4 +139,5 @@ export class AppComponent {
     };
     reader.readAsText(file);
   }
+
 }

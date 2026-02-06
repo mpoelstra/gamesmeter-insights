@@ -59,6 +59,9 @@
       <button type="button" (click)="setTab('gems')" [class.active]="activeTab() === 'gems'">
         {{ i18n.t('tabs.gems') }}
       </button>
+      <button type="button" (click)="setTab('snake')" [class.active]="activeTab() === 'snake'">
+        {{ i18n.t('tabs.snake') }}
+      </button>
       <button type="button" (click)="setTab('library')" [class.active]="activeTab() === 'library'">
         {{ i18n.t('tabs.library') }}
       </button>
@@ -122,6 +125,12 @@
     @if (activeTab() === 'gems') {
       <section class="panel">
         <app-hidden-gems-card />
+      </section>
+    }
+
+    @if (activeTab() === 'snake') {
+      <section class="panel">
+        <app-snake-game [rows]="allRows()" />
       </section>
     }
 

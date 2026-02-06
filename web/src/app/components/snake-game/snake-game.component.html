@@ -1,0 +1,38 @@
+<article class="card snake">
+  <div class="head">
+    <div>
+      <h3>{{ i18n.t('snake.title') }}</h3>
+      <p class="muted">{{ i18n.t('snake.subtitle') }}</p>
+    </div>
+    <div class="controls">
+      <button type="button" class="ghost" (click)="startGame()">{{ i18n.t('snake.start') }}</button>
+      <button type="button" class="ghost" (click)="resetGame()">{{ i18n.t('snake.reset') }}</button>
+    </div>
+  </div>
+
+  <div class="board" #board>
+    <canvas class="playfield" #canvas></canvas>
+  </div>
+
+  <div class="meta">
+    <span>{{ i18n.t('snake.score') }}: {{ score() }}</span>
+    <span>{{ i18n.t('snake.highScore') }}: {{ highScore() }}</span>
+    @if (gameOver()) {
+      <span class="warn">{{ i18n.t('snake.gameOver') }}</span>
+    }
+  </div>
+
+  <p class="muted note">{{ i18n.t('snake.instructions') }}</p>
+
+  <div class="legend">
+    <span class="legend-title">{{ i18n.t('snake.platformObstacles') }}</span>
+    <div class="legend-items">
+      @for (obstacle of obstacles(); track obstacle.name) {
+        <span class="legend-item">
+          <span class="dot" [style.background]="obstacle.color"></span>
+          {{ obstacle.name }}
+        </span>
+      }
+    </div>
+  </div>
+</article>
