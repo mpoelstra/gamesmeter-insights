@@ -1,8 +1,26 @@
 <article class="library-layout">
   <div class="card library-main">
-    <button type="button" class="clear-button clear-button-floating" (click)="clearFilters()">
-      {{ i18n.t('filters.clear') }}
-    </button>
+    <div class="library-actions">
+      <div class="view-toggle" role="group" [attr.aria-label]="i18n.t('library.view')">
+        <button
+          type="button"
+          [class.active]="viewMode() === 'list'"
+          (click)="setView('list')"
+        >
+          {{ i18n.t('library.viewList') }}
+        </button>
+        <button
+          type="button"
+          [class.active]="viewMode() === 'tiles'"
+          (click)="setView('tiles')"
+        >
+          {{ i18n.t('library.viewTiles') }}
+        </button>
+      </div>
+      <button type="button" class="clear-button" (click)="clearFilters()">
+        {{ i18n.t('filters.clear') }}
+      </button>
+    </div>
     <div class="library-header">
       <h3>{{ i18n.t('library.title') }}</h3>
       <p class="muted">{{ i18n.t('library.subtitle') }}</p>
@@ -68,12 +86,53 @@
       </div>
     </div>
 
-    <div class="game-list">
-      @if (sortedRows.length === 0) {
-        <div class="empty-state">
-          <p>{{ i18n.t('library.empty') }}</p>
-        </div>
-      } @else {
+    @if (sortedRows.length === 0) {
+      <div class="empty-state">
+        <p>{{ i18n.t('library.empty') }}</p>
+      </div>
+    } @else if (viewMode() === 'tiles') {
+      <div class="game-tiles">
+        @for (game of sortedRows; track trackByTitle($index, game)) {
+          <div class="game-tile">
+            <app-cover-image
+              class="tile-cover"
+              [src]="coverUrlFor(game.id)"
+              [alt]="game.title"
+              [width]="null"
+              [height]="null"
+              [variant]="'fill'"
+              [title]="game.title"
+              [platform]="game.platform ?? i18n.t('label.platformUnknown')"
+              [rating]="game.rating"
+              [ratedOn]="game.placed ? i18n.formatDate(game.placed) : null"
+            />
+            <div class="tile-body">
+              <p class="game-title tile-title">
+                @for (part of highlightParts(game.title); track part.text + part.match) {
+                  <span [class.highlight]="part.match">{{ part.text }}</span>
+                }
+              </p>
+              <p class="muted tile-platform">
+                {{ game.platform ?? i18n.t('label.platformUnknown') }} ·
+                {{ game.year ?? i18n.t('label.yearUnknown') }}
+              </p>
+              @if (game.placed) {
+                <p class="muted rated-line tile-rated">
+                  {{ i18n.t('label.ratedOn') }} {{ i18n.formatDate(game.placed) }}
+                </p>
+              }
+              <app-rating-stars
+                class="tile-stars"
+                [rating]="game.rating"
+                [size]="24"
+                [attr.aria-label]="game.rating?.toFixed(1) ?? i18n.t('label.na')"
+              />
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="game-list">
         @for (game of sortedRows; track trackByTitle($index, game)) {
           <div class="game-item">
             <app-platform-logo
@@ -98,15 +157,15 @@
                   <span [class.highlight]="part.match">{{ part.text }}</span>
                 }
               </p>
-            <p class="muted">
-              {{ game.platform ?? i18n.t('label.platformUnknown') }} ·
-              {{ game.year ?? i18n.t('label.yearUnknown') }}
-            </p>
-            @if (game.placed) {
-              <p class="muted rated-line">
-                {{ i18n.t('label.ratedOn') }} {{ i18n.formatDate(game.placed) }}
+              <p class="muted">
+                {{ game.platform ?? i18n.t('label.platformUnknown') }} ·
+                {{ game.year ?? i18n.t('label.yearUnknown') }}
               </p>
-            }
+              @if (game.placed) {
+                <p class="muted rated-line">
+                  {{ i18n.t('label.ratedOn') }} {{ i18n.formatDate(game.placed) }}
+                </p>
+              }
             </div>
             <app-rating-stars
               class="rating-stars"
@@ -116,7 +175,7 @@
             />
           </div>
         }
-      }
-    </div>
+      </div>
+    }
   </div>
 </article>

@@ -17,6 +17,21 @@
   cursor: pointer;
 }
 
+.cover-button.fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.cover-button.fill .cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+}
+
 .cover-dialog {
   position: fixed;
   inset: 0;

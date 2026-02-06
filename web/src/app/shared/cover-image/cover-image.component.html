@@ -2,12 +2,13 @@
   type="button"
   class="cover-button"
   [class.clickable]="clickable()"
+  [class.fill]="isFillVariant"
   (click)="showPreview()"
 >
   <img
     class="cover"
-    [style.width.px]="width()"
-    [style.height.px]="height()"
+    [style.width.px]="isFillVariant ? null : (width() ?? null)"
+    [style.height.px]="isFillVariant ? null : (height() ?? null)"
     [src]="src() || fallback"
     [alt]="alt()"
     loading="lazy"

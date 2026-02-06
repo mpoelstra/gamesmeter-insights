@@ -28,6 +28,7 @@ export class GamesLibraryComponent {
   readonly ratedYearFilter = signal<string>('all');
   readonly sortFilter = signal<string>('title');
   readonly letterFilter = signal<string>('all');
+  readonly viewMode = signal<'list' | 'tiles'>('list');
   private readonly appliedInitial = signal(false);
 
   get filteredRows(): VoteRow[] {
@@ -159,6 +160,10 @@ export class GamesLibraryComponent {
 
   updateLetter(value: string) {
     this.letterFilter.set(value || 'all');
+  }
+
+  setView(mode: 'list' | 'tiles') {
+    this.viewMode.set(mode);
   }
 
   get sortOptions(): Array<{ label: string; value: string }> {
