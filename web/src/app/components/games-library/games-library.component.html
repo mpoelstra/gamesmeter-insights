@@ -76,7 +76,13 @@
       } @else {
         @for (game of sortedRows; track trackByTitle($index, game)) {
           <div class="game-item">
-            <span class="game-letter">{{ letterFor(game) }}</span>
+            <img
+              class="game-platform-logo"
+              [src]="platformImage(game.platform).src"
+              [alt]="game.platform ?? i18n.t('label.platformUnknown')"
+              loading="lazy"
+              decoding="async"
+            />
             <div class="game-details">
               <p class="game-title">
                 @for (part of highlightParts(game.title); track part.text + part.match) {

@@ -41,7 +41,20 @@
 
     <article class="card">
       <h3>{{ i18n.t('fun.platformPersonality') }}</h3>
+      @if (topPlatformName()) {
+        <div class="platform-line">
+          <img
+            class="platform-logo"
+            [src]="platformImage(topPlatformName()).src"
+            [alt]="topPlatformName()!"
+            loading="lazy"
+            decoding="async"
+          />
+          <p class="value">{{ platformPersonality() ?? i18n.t('fun.loading') }}</p>
+        </div>
+      } @else {
       <p class="value">{{ platformPersonality() ?? i18n.t('fun.loading') }}</p>
+      }
       <p class="muted">{{ i18n.t('fun.platformPersonality.note') }}</p>
     </article>
     

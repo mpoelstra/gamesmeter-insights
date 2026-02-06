@@ -10,7 +10,16 @@
     @for (platform of peaks(); track platform.name) {
       <button class="peak" type="button" (click)="selectPlatform(platform.name)">
         <div class="peak-head">
-          <span class="name">{{ platform.name }}</span>
+          <div class="identity">
+            <img
+              class="platform-logo"
+              [src]="platformImage(platform.name).src"
+              [alt]="platform.name"
+              loading="lazy"
+              decoding="async"
+            />
+            <span class="name">{{ platform.name }}</span>
+          </div>
           <span class="meta">{{ platform.count }} {{ i18n.t('label.games') }}</span>
         </div>
         <div class="bar">

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, signal } f
 import { CommonModule } from '@angular/common';
 import { VoteRow } from '../../models';
 import { I18nService } from '../../i18n.service';
+import { getPlatformImage, PlatformImage } from '../../platform-images';
 
 interface MonthStat {
   label: string;
@@ -277,6 +278,25 @@ export class FunStatsDashboardComponent {
       consistency: this.i18n.t(consistencyKey),
     });
   });
+
+  readonly topPlatformName = computed(() => {
+    const map = new Map<string, number>();
+    for (const row of this.ratedRows()) {
+      const platform = row.platform ?? this.i18n.t('label.platformUnknown');
+      map.set(platform, (map.get(platform) ?? 0) + 1);
+    }
+    let best: { name: string; count: number } | null = null;
+    for (const [name, count] of map.entries()) {
+      if (!best || count > best.count) {
+        best = { name, count };
+      }
+    }
+    return best?.name ?? null;
+  });
+
+  platformImage(platform: string | null | undefined): PlatformImage {
+    return getPlatformImage(platform ?? this.i18n.t('label.platformUnknown'));
+  }
 
   readonly mostReplayedFranchise = computed(() => {
     const counts = new Map<string, number>();

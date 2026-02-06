@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, afterRenderEffect, inject, input, o
 import { CommonModule } from '@angular/common';
 import { VoteRow } from '../../models';
 import { I18nService } from '../../i18n.service';
+import { getPlatformImage, PlatformImage } from '../../platform-images';
 
 @Component({
   selector: 'app-games-library',
@@ -258,6 +259,10 @@ export class GamesLibraryComponent {
 
   letterFor(row: VoteRow): string {
     return firstLetter(row.title);
+  }
+
+  platformImage(platform: string | null | undefined): PlatformImage {
+    return getPlatformImage(platform ?? this.i18n.t('label.platformUnknown'));
   }
 }
 

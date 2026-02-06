@@ -4,6 +4,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { VoteRow } from '../../models';
 import { I18nService } from '../../i18n.service';
+import { getPlatformImage, PlatformImage } from '../../platform-images';
 
 interface PlatformStats {
   name: string;
@@ -183,6 +184,10 @@ export class PlatformsDashboardComponent {
       .sort((a, b) => a.stdDev - b.stdDev)[0];
     return { mostPlayed, highestAvg, consistent };
   });
+
+  platformImage(platform: string | null | undefined): PlatformImage {
+    return getPlatformImage(platform ?? this.i18n.t('label.platformUnknown'));
+  }
 }
 
 function buildPlatformStats(rows: VoteRow[], unknownLabel: string): PlatformStats[] {

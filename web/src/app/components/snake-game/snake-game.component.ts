@@ -433,36 +433,37 @@ export class SnakeGameComponent implements AfterViewInit, OnDestroy {
     this.ctx.fill();
 
     const label = obstacle.name.trim();
-    if (label) {
-      const padding = 6;
-      const maxWidth = size - padding * 2;
-      const maxHeight = size - padding * 2;
-      let fontSize = Math.max(7, Math.floor(this.cellSize * 0.6));
-      const minFont = 6;
-      let lines: string[] = [];
+    if (!label) {
+      return;
+    }
+    const padding = 6;
+    const maxWidth = size - padding * 2;
+    const maxHeight = size - padding * 2;
+    let fontSize = Math.max(7, Math.floor(this.cellSize * 0.6));
+    const minFont = 6;
+    let lines: string[] = [];
 
-      while (fontSize >= minFont) {
-        this.ctx.font = `600 ${fontSize}px \"Space Grotesk\", sans-serif`;
-        lines = wrapText(this.ctx, label, maxWidth);
-        const lineHeight = Math.ceil(fontSize * 1.1);
-        const totalHeight = lines.length * lineHeight;
-        const widest = Math.max(...lines.map(line => this.ctx!.measureText(line).width));
-        if (totalHeight <= maxHeight && widest <= maxWidth) {
-          break;
-        }
-        fontSize -= 1;
-      }
-
-      this.ctx.fillStyle = '#ffffff';
-      this.ctx.textAlign = 'center';
-      this.ctx.textBaseline = 'top';
+    while (fontSize >= minFont) {
+      this.ctx.font = `600 ${fontSize}px \"Space Grotesk\", sans-serif`;
+      lines = wrapText(this.ctx, label, maxWidth);
       const lineHeight = Math.ceil(fontSize * 1.1);
-      const blockHeight = lines.length * lineHeight;
-      let startY = y + (size - blockHeight) / 2;
-      for (const line of lines) {
-        this.ctx.fillText(line, x + size / 2, startY);
-        startY += lineHeight;
+      const totalHeight = lines.length * lineHeight;
+      const widest = Math.max(...lines.map(line => this.ctx!.measureText(line).width));
+      if (totalHeight <= maxHeight && widest <= maxWidth) {
+        break;
       }
+      fontSize -= 1;
+    }
+
+    this.ctx.fillStyle = '#ffffff';
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'top';
+    const lineHeight = Math.ceil(fontSize * 1.1);
+    const blockHeight = lines.length * lineHeight;
+    let startY = y + (size - blockHeight) / 2;
+    for (const line of lines) {
+      this.ctx.fillText(line, x + size / 2, startY);
+      startY += lineHeight;
     }
   }
 

@@ -150,16 +150,13 @@
   border: 1px solid rgba(15, 107, 95, 0.12);
 }
 
-.game-letter {
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
-  background: var(--accent-soft);
-  color: var(--accent-strong);
-  font-weight: 700;
-  display: grid;
-  place-items: center;
+.game-platform-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
   flex-shrink: 0;
+  background: #ffffff;
+  border: 1px solid rgba(15, 107, 95, 0.12);
 }
 
 .game-details {

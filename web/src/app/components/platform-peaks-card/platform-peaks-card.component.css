@@ -58,8 +58,25 @@
   font-weight: 600;
 }
 
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.platform-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  background: #ffffff;
+  border: 1px solid rgba(15, 107, 95, 0.12);
+}
+
 .name {
   font-weight: 700;
+  min-width: 0;
 }
 
 .meta {

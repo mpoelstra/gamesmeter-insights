@@ -31,6 +31,21 @@
   font-weight: 700;
 }
 
+.platform-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.platform-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: #ffffff;
+  border: 1px solid rgba(15, 107, 95, 0.12);
+}
+
 .card {
   height: 300px;
 }

@@ -56,6 +56,22 @@
   font-weight: 700;
 }
 
+.sig-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.platform-logo {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: #ffffff;
+  border: 1px solid rgba(15, 107, 95, 0.12);
+}
+
 .era-grid {
   display: grid;
   gap: 12px;

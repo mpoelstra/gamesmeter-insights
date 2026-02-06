@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, output } f
 import { CommonModule } from '@angular/common';
 import { VoteRow } from '../../models';
 import { I18nService } from '../../i18n.service';
+import { getPlatformImage, PlatformImage } from '../../platform-images';
 
 interface PlatformPeak {
   name: string;
@@ -48,6 +49,10 @@ export class PlatformPeaksCardComponent {
 
   barWidth(value: number): number {
     return Math.max(0, Math.min(100, (value / 5) * 100));
+  }
+
+  platformImage(platform: string): PlatformImage {
+    return getPlatformImage(platform);
   }
 
   selectPlatform(platform: string) {
