@@ -30,6 +30,14 @@
         </select>
       </label>
       <label>
+        {{ i18n.t('filters.ratedYear') }}
+        <select [value]="ratedYearFilter()" (change)="updateRatedYear($any($event.target).value)">
+          @for (year of ratedYears; track year) {
+            <option [value]="year">{{ year === 'all' ? i18n.t('filters.allRatedYears') : year }}</option>
+          }
+        </select>
+      </label>
+      <label>
         {{ i18n.t('filters.rating') }}
         <select [value]="ratingFilter()" (change)="updateRating($any($event.target).value)">
           @for (option of ratingOptions; track option.value) {

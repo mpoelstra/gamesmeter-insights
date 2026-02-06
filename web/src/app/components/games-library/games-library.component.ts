@@ -24,6 +24,7 @@ export class GamesLibraryComponent implements OnDestroy {
   readonly platformFilter = signal('all');
   readonly ratingFilter = signal<string>('all');
   readonly yearFilter = signal<string>('all');
+  readonly ratedYearFilter = signal<string>('all');
   readonly activeLetter = signal<string | null>(null);
   private observer: IntersectionObserver | null = null;
   private isAutoScrolling = false;
@@ -35,15 +36,18 @@ export class GamesLibraryComponent implements OnDestroy {
     const platform = this.platformFilter();
     const ratingFilter = this.ratingFilter();
     const yearFilter = this.yearFilter();
+    const ratedYearFilter = this.ratedYearFilter();
     const minRating = ratingFilter === 'all' ? null : Number(ratingFilter);
 
     return this.rows().filter(row => {
       const matchesQuery = query.length === 0 || row.title.toLowerCase().includes(query);
       const matchesPlatform = platform === 'all' || row.platform === platform;
       const matchesYear = yearFilter === 'all' || String(row.year ?? '') === yearFilter;
+      const ratedYear = row.placed ? String(row.placed.getFullYear()) : '';
+      const matchesRatedYear = ratedYearFilter === 'all' || ratedYear === ratedYearFilter;
       const rating = row.rating ?? 0;
       const matchesRating = minRating === null ? true : rating >= minRating;
-      return matchesQuery && matchesPlatform && matchesRating && matchesYear;
+      return matchesQuery && matchesPlatform && matchesRating && matchesYear && matchesRatedYear;
     });
   }
 
@@ -62,6 +66,17 @@ export class GamesLibraryComponent implements OnDestroy {
     for (const row of this.rows()) {
       if (row.year) {
         yearSet.add(row.year);
+      }
+    }
+    const sorted = [...yearSet].sort((a, b) => b - a);
+    return ['all', ...sorted.map(year => String(year))];
+  }
+
+  get ratedYears(): string[] {
+    const yearSet = new Set<number>();
+    for (const row of this.rows()) {
+      if (row.placed) {
+        yearSet.add(row.placed.getFullYear());
       }
     }
     const sorted = [...yearSet].sort((a, b) => b - a);
@@ -155,6 +170,11 @@ export class GamesLibraryComponent implements OnDestroy {
     this.setupObserver();
   }
 
+  updateRatedYear(value: string) {
+    this.ratedYearFilter.set(value);
+    this.setupObserver();
+  }
+
   get ratingOptions(): Array<{ label: string; value: string }> {
     const options: Array<{ label: string; value: string }> = [
       { label: this.i18n.t('filters.allRatings'), value: 'all' },
@@ -192,6 +212,7 @@ export class GamesLibraryComponent implements OnDestroy {
       this.platformFilter();
       this.ratingFilter();
       this.yearFilter();
+      this.ratedYearFilter();
       this.setupObserver();
       this.updateActiveFromCurrentScroll();
     });
