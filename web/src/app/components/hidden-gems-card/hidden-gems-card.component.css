@@ -1,18 +1,154 @@
-.placeholder {
-  background: var(--bg-alt);
-  padding: 20px;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.header h3 {
+  margin: 0;
+}
+
+.header .muted {
+  margin: 6px 0 0;
+}
+
+.ghost {
+  border: 1px solid rgba(15, 107, 95, 0.2);
+  border-radius: 999px;
+  padding: 6px 14px;
+  background: #fff;
+  color: var(--accent-strong);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.loading {
+  margin-top: 16px;
+  padding: 16px;
   border-radius: var(--radius-sm);
+  background: var(--bg-alt);
+  border: 1px solid rgba(15, 107, 95, 0.12);
 }
 
-.label {
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 11px;
+.bar {
+  height: 8px;
+  background: rgba(15, 107, 95, 0.12);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #0f6b5f, #1b8a7a);
+}
+
+.error {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  background: rgba(197, 50, 50, 0.08);
+  border: 1px solid rgba(197, 50, 50, 0.2);
+  color: #b23a3a;
+}
+
+.note {
+  margin: 12px 0 16px;
+  font-size: 13px;
   color: var(--muted);
-  margin: 0 0 4px;
+  display: grid;
+  gap: 4px;
 }
 
-ul {
-  margin: 8px 0 0;
-  padding-left: 18px;
+.note p {
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.panel {
+  background: var(--bg-alt);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(15, 107, 95, 0.12);
+  padding: 16px;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.panel h4 {
+  margin: 0;
+}
+
+.list {
+  display: grid;
+  gap: 12px;
+  margin-top: 6px;
+  align-content: start;
+}
+
+.hint {
+  margin: 0;
+  font-size: 12px;
+}
+
+.gem-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 8px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 107, 95, 0.08);
+}
+
+.gem-title {
+  margin: 0;
+  font-weight: 600;
+}
+
+.gem-details .muted {
+  margin: 4px 0 0;
+}
+
+.scores {
+  margin-top: 6px;
+  font-size: 12px;
+  display: flex;
+  gap: 10px;
+}
+
+.scores .you {
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
+.scores .public {
+  color: var(--muted);
+}
+
+.delta {
+  font-weight: 700;
+  font-size: 14px;
+  min-width: 48px;
+  text-align: right;
+}
+
+.delta.positive {
+  color: #0f6b5f;
+}
+
+.delta.negative {
+  color: #b23a3a;
+}
+
+.gem-cover .cover-button {
+  cursor: pointer;
 }

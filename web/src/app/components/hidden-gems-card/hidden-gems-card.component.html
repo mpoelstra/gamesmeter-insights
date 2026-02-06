@@ -1,14 +1,103 @@
 <article class="card">
-  <h3>{{ i18n.t('hiddenGems.title') }}</h3>
-  <p>{{ i18n.t('hiddenGems.body') }}</p>
-  <div class="placeholder">
+  <div class="header">
     <div>
-      <p class="label">{{ i18n.t('hiddenGems.planned') }}</p>
-      <ul>
-        <li>{{ i18n.t('hiddenGems.item1') }}</li>
-        <li>{{ i18n.t('hiddenGems.item2') }}</li>
-        <li>{{ i18n.t('hiddenGems.item3') }}</li>
-      </ul>
+      <h3>{{ i18n.t('hiddenGems.title') }}</h3>
+      <p class="muted">{{ i18n.t('hiddenGems.subtitle') }}</p>
     </div>
+    <button type="button" class="ghost" (click)="runAnalysis()">
+      {{ i18n.t('hiddenGems.refresh') }}
+    </button>
   </div>
+
+  @if (isLoading()) {
+    <div class="loading">
+      <p>{{ i18n.t('hiddenGems.loading', { done: progress().done, total: progress().total }) }}</p>
+      <div class="bar">
+        <span [style.width.%]="progress().total ? (progress().done / progress().total) * 100 : 0"></span>
+      </div>
+    </div>
+  } @else if (error()) {
+    <div class="error">
+      <p>{{ error() }}</p>
+    </div>
+  } @else {
+    <div class="note">
+      <p>{{ i18n.t('hiddenGems.note') }}</p>
+      <p>{{ i18n.t('hiddenGems.note2') }}</p>
+    </div>
+    <div class="grid">
+      <div class="panel">
+        <h4>{{ i18n.t('hiddenGems.underrated') }}</h4>
+        <p class="muted">{{ i18n.t('hiddenGems.underratedDesc') }}</p>
+        <div class="list">
+          @for (item of hiddenGems(); track item.row.title + item.row.year) {
+            <div class="gem-row">
+              <app-cover-image
+                class="gem-cover"
+                [src]="coverUrlFor(item.row.id)"
+                [alt]="item.row.title"
+                [width]="52"
+                [height]="72"
+                [title]="item.row.title"
+                [platform]="item.row.platform ?? i18n.t('label.platformUnknown')"
+                [rating]="item.row.rating"
+                [ratedOn]="item.row.placed ? i18n.formatDate(item.row.placed) : null"
+              />
+              <div class="gem-details">
+                <p class="gem-title">{{ item.row.title }}</p>
+                <p class="muted">
+                  {{ item.row.platform ?? i18n.t('label.platformUnknown') }} ·
+                  {{ item.row.year ?? i18n.t('label.yearUnknown') }}
+                </p>
+                <div class="scores">
+                  <span class="you">{{ i18n.t('hiddenGems.youScore', { value: item.row.rating?.toFixed(1) ?? '-' }) }}</span>
+                  <span class="public">{{ i18n.t('hiddenGems.publicScore', { value: item.publicScore.toFixed(1) }) }}</span>
+                </div>
+              </div>
+              <div class="delta positive">+{{ item.delta.toFixed(1) }}</div>
+            </div>
+          }
+          @if (hiddenGems().length < 3) {
+            <p class="muted hint">{{ i18n.t('hiddenGems.lowSample') }}</p>
+          }
+        </div>
+      </div>
+      <div class="panel">
+        <h4>{{ i18n.t('hiddenGems.overrated') }}</h4>
+        <p class="muted">{{ i18n.t('hiddenGems.overratedDesc') }}</p>
+        <div class="list">
+          @for (item of hotTakes(); track item.row.title + item.row.year) {
+            <div class="gem-row">
+              <app-cover-image
+                class="gem-cover"
+                [src]="coverUrlFor(item.row.id)"
+                [alt]="item.row.title"
+                [width]="52"
+                [height]="72"
+                [title]="item.row.title"
+                [platform]="item.row.platform ?? i18n.t('label.platformUnknown')"
+                [rating]="item.row.rating"
+                [ratedOn]="item.row.placed ? i18n.formatDate(item.row.placed) : null"
+              />
+              <div class="gem-details">
+                <p class="gem-title">{{ item.row.title }}</p>
+                <p class="muted">
+                  {{ item.row.platform ?? i18n.t('label.platformUnknown') }} ·
+                  {{ item.row.year ?? i18n.t('label.yearUnknown') }}
+                </p>
+                <div class="scores">
+                  <span class="you">{{ i18n.t('hiddenGems.youScore', { value: item.row.rating?.toFixed(1) ?? '-' }) }}</span>
+                  <span class="public">{{ i18n.t('hiddenGems.publicScore', { value: item.publicScore.toFixed(1) }) }}</span>
+                </div>
+              </div>
+              <div class="delta negative">{{ item.delta.toFixed(1) }}</div>
+            </div>
+          }
+          @if (hotTakes().length < 3) {
+            <p class="muted hint">{{ i18n.t('hiddenGems.lowSample') }}</p>
+          }
+        </div>
+      </div>
+    </div>
+  }
 </article>
