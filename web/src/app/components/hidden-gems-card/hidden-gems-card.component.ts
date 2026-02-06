@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { I18nService } from '../../i18n.service';
 
 @Component({
   selector: 'app-hidden-gems-card',
@@ -7,4 +8,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   templateUrl: './hidden-gems-card.component.html',
   styleUrls: ['./hidden-gems-card.component.css'],
 })
-export class HiddenGemsCardComponent {}
+export class HiddenGemsCardComponent {
+  readonly i18n = inject(I18nService);
+}

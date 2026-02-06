@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { YearSummary } from '../../models';
+import { I18nService } from '../../i18n.service';
 
 @Component({
   selector: 'app-best-games-card',
@@ -13,6 +14,7 @@ import { YearSummary } from '../../models';
 export class BestGamesCardComponent {
   readonly summaries = input.required<YearSummary[]>();
   readonly yearFilter = signal<string>('all');
+  readonly i18n = inject(I18nService);
 
   get yearOptions(): string[] {
     return ['all', ...this.summaries().map(summary => String(summary.year))];

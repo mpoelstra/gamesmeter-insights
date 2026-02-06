@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InsightsService } from './services/insights.service';
+import { I18nService } from './i18n.service';
 import {
   BestGamesCardComponent,
   FunStatsDashboardComponent,
@@ -59,6 +60,7 @@ type TabKey =
 })
 export class AppComponent {
   private readonly insights = inject(InsightsService);
+  readonly i18n = inject(I18nService);
 
   readonly activeTab = signal<TabKey>(TAB_OVERVIEW);
 
@@ -75,11 +77,11 @@ export class AppComponent {
   readonly statusMessage = computed(() => {
     switch (this.status()) {
       case 'ready':
-        return 'Report generated locally in your browser.';
+        return this.i18n.t('status.ready');
       case 'error':
-        return 'Unable to read CSV. Please confirm the GamesMeter export format.';
+        return this.i18n.t('status.error');
       default:
-        return 'Your CSV never leaves the browser.';
+        return this.i18n.t('status.empty');
     }
   });
 
@@ -105,7 +107,7 @@ export class AppComponent {
     try {
       const response = await fetch('assets/sample.csv');
       const text = await response.text();
-      this.insights.loadCsvText(text, 'Sample CSV');
+      this.insights.loadCsvText(text, this.i18n.t('file.sample'));
       this.activeTab.set(TAB_OVERVIEW);
     } catch (error) {
       console.error(error);

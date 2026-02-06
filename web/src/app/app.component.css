@@ -44,6 +44,35 @@ h1 {
   gap: 16px;
 }
 
+.lang-switch {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.lang-switch button {
+  border: 1px solid rgba(28, 28, 28, 0.2);
+  background: transparent;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--muted);
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.lang-switch button.active {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+}
+
+.lang-switch button:not(.active):hover {
+  border-color: rgba(15, 107, 95, 0.4);
+  color: var(--accent-strong);
+}
+
 .upload {
   display: flex;
   gap: 12px;

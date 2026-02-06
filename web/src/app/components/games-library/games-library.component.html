@@ -1,36 +1,36 @@
 <article class="library-layout" id="library-top">
   <div class="card library-main">
     <div class="library-header">
-      <h3>All Games</h3>
-      <p class="muted">Browse every title you have rated or logged, grouped alphabetically.</p>
-      <p class="summary">{{ filteredCount }} of {{ totalCount }} games shown</p>
+      <h3>{{ i18n.t('library.title') }}</h3>
+      <p class="muted">{{ i18n.t('library.subtitle') }}</p>
+      <p class="summary">{{ i18n.t('library.summary', { filtered: filteredCount, total: totalCount }) }}</p>
     </div>
 
     <div class="filters">
       <label>
-        Search
+        {{ i18n.t('filters.search') }}
         <input type="search" [value]="query()" (input)="updateQuery($any($event.target).value)" />
       </label>
       <label>
-        Platform
+        {{ i18n.t('filters.platform') }}
         <select [value]="platformFilter()" (change)="updatePlatform($any($event.target).value)">
           @for (platform of platforms; track platform) {
             <option [value]="platform" [selected]="platformFilter() === platform">
-              {{ platform === 'all' ? 'All platforms' : platform }}
+              {{ platform === 'all' ? i18n.t('filters.allPlatforms') : platform }}
             </option>
           }
         </select>
       </label>
       <label>
-        Year
+        {{ i18n.t('filters.year') }}
         <select [value]="yearFilter()" (change)="updateYear($any($event.target).value)">
           @for (year of years; track year) {
-            <option [value]="year">{{ year === 'all' ? 'All years' : year }}</option>
+            <option [value]="year">{{ year === 'all' ? i18n.t('filters.allYears') : year }}</option>
           }
         </select>
       </label>
       <label>
-        Rating
+        {{ i18n.t('filters.rating') }}
         <select [value]="ratingFilter()" (change)="updateRating($any($event.target).value)">
           @for (option of ratingOptions; track option.value) {
             <option [value]="option.value">{{ option.label }}</option>
@@ -44,7 +44,7 @@
         <section class="group">
           <div class="group-header" [attr.id]="'letter-' + group.letter">
             <h4>{{ group.letter }}</h4>
-            <span class="count">{{ group.items.length }} games</span>
+            <span class="count">{{ group.items.length }} {{ i18n.t('label.games') }}</span>
           </div>
           <div class="game-list">
             @for (game of group.items; track trackByTitle($index, game)) {
@@ -55,7 +55,10 @@
                       <span [class.highlight]="part.match">{{ part.text }}</span>
                     }
                   </p>
-                  <p class="muted">{{ game.platform ?? 'Platform unknown' }} · {{ game.year ?? 'Year unknown' }}</p>
+                  <p class="muted">
+                    {{ game.platform ?? i18n.t('label.platformUnknown') }} ·
+                    {{ game.year ?? i18n.t('label.yearUnknown') }}
+                  </p>
                 </div>
                 <span class="rating">{{ game.rating?.toFixed(1) ?? '—' }}</span>
               </div>
@@ -66,8 +69,8 @@
     </div>
   </div>
 
-  <aside class="card letter-card" aria-label="Alphabetical index">
-    <h4>Index</h4>
+  <aside class="card letter-card" [attr.aria-label]="i18n.t('library.indexLabel')">
+    <h4>{{ i18n.t('library.index') }}</h4>
     <nav class="letter-index">
       @for (letter of indexLetters; track letter) {
         <button type="button" (click)="scrollTo(letter)" [class.active]="activeLetter() === letter">
@@ -75,6 +78,6 @@
         </button>
       }
     </nav>
-    <a class="jump-top" href="#library-top">Jump to top</a>
+    <a class="jump-top" href="#library-top">{{ i18n.t('library.jumpTop') }}</a>
   </aside>
 </article>

@@ -1,11 +1,11 @@
 <article class="card">
   <div class="header">
-    <h3>Best Scoring Games Per Year</h3>
+    <h3>{{ i18n.t('bestGames.title') }}</h3>
     <label class="filter">
-      Year
+      {{ i18n.t('filters.year') }}
       <select [value]="yearFilter()" (change)="updateYear($any($event.target).value)">
         @for (year of yearOptions; track year) {
-          <option [value]="year">{{ year === 'all' ? 'All years' : year }}</option>
+          <option [value]="year">{{ year === 'all' ? i18n.t('filters.allYears') : year }}</option>
         }
       </select>
     </label>
@@ -15,7 +15,7 @@
       <div class="game-year">
         <div class="game-year-header">
           <span>{{ summary.year }}</span>
-          <span class="muted">Top {{ summary.topGames.length }} titles</span>
+          <span class="muted">{{ i18n.t('bestGames.topTitles', { count: summary.topGames.length }) }}</span>
         </div>
             <div class="game-list">
             @for (game of summary.topGames; track game.title; let i = $index) {
@@ -26,7 +26,7 @@
                   }
                   <div class="game-text">
                     <p class="game-title">{{ game.title }}</p>
-                    <p class="muted">{{ game.platform ?? 'Platform unknown' }}</p>
+                    <p class="muted">{{ game.platform ?? i18n.t('label.platformUnknown') }}</p>
                   </div>
                 </div>
                 <span class="rating">{{ game.rating?.toFixed(1) }}</span>

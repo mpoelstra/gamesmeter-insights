@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VoteRow } from '../../models';
+import { I18nService } from '../../i18n.service';
 
 interface PlatformPeak {
   name: string;
@@ -19,11 +20,12 @@ interface PlatformPeak {
 export class PlatformPeaksCardComponent {
   readonly rows = input.required<VoteRow[]>();
   readonly platformSelected = output<string>();
+  readonly i18n = inject(I18nService);
 
   readonly peaks = computed<PlatformPeak[]>(() => {
     const map = new Map<string, { total: number; count: number }>();
     for (const row of this.rows()) {
-      const platform = row.platform ?? 'Unknown';
+      const platform = row.platform ?? this.i18n.t('label.platformUnknown');
       const rating = row.rating;
       if (rating === null) {
         continue;

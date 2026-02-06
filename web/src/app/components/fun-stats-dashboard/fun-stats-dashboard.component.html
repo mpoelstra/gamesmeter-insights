@@ -1,56 +1,61 @@
 <section class="fun">
   <div class="grid four">
     <article class="card">
-      <h3>First & Last</h3>
+      <h3>{{ i18n.t('fun.firstLast') }}</h3>
       @if (firstLast()) {
         <p class="value">{{ firstLast()!.first.title }}</p>
-        <p class="muted">First rated {{ firstLast()!.first.placed?.toLocaleDateString() }}</p>
+        <p class="muted">{{ i18n.t('fun.firstRated', { date: i18n.formatDate(firstLast()!.first.placed) }) }}</p>
         <p class="value">{{ firstLast()!.last.title }}</p>
-        <p class="muted">Latest rated {{ firstLast()!.last.placed?.toLocaleDateString() }}</p>
+        <p class="muted">{{ i18n.t('fun.latestRated', { date: i18n.formatDate(firstLast()!.last.placed) }) }}</p>
       } @else {
-        <p class="muted">No rating dates found yet.</p>
+        <p class="muted">{{ i18n.t('fun.noDates') }}</p>
       }
     </article>
 
     <article class="card">
-      <h3>Longest Gap</h3>
+      <h3>{{ i18n.t('fun.longestGap') }}</h3>
       @if (longestGap()) {
-        <p class="value">{{ longestGap()!.days }} days</p>
-        <p class="muted">No ratings between {{ longestGap()!.from.toLocaleDateString() }} and {{ longestGap()!.to.toLocaleDateString() }}.</p>
+        <p class="value">{{ i18n.t('fun.days', { count: longestGap()!.days }) }}</p>
+        <p class="muted">
+          {{ i18n.t('fun.noRatingsBetween', {
+            from: i18n.formatDate(longestGap()!.from),
+            to: i18n.formatDate(longestGap()!.to)
+          }) }}
+        </p>
       } @else {
-        <p class="muted">Not enough data to measure gaps.</p>
+        <p class="muted">{{ i18n.t('fun.notEnoughGaps') }}</p>
       }
     </article>
 
     <article class="card">
-      <h3>Taste Shift</h3>
+      <h3>{{ i18n.t('fun.tasteShift') }}</h3>
       @if (tasteShift()) {
         <p class="value">
           {{ tasteShift()!.delta >= 0 ? '⬆' : '⬇' }} {{ tasteShift()!.delta.toFixed(2) }}
         </p>
-        <p class="muted">Compared to the previous year.</p>
+        <p class="muted">{{ i18n.t('fun.comparedPrev') }}</p>
       } @else {
-        <p class="muted">Not enough years to measure shift.</p>
+        <p class="muted">{{ i18n.t('fun.notEnoughYears') }}</p>
       }
     </article>
 
     <article class="card">
-      <h3>Platform Personality</h3>
-      <p class="value">{{ platformPersonality() ?? 'Loading...' }}</p>
-      <p class="muted">Based on your most played platform.</p>
+      <h3>{{ i18n.t('fun.platformPersonality') }}</h3>
+      <p class="value">{{ platformPersonality() ?? i18n.t('fun.loading') }}</p>
+      <p class="muted">{{ i18n.t('fun.platformPersonality.note') }}</p>
     </article>
     
     <article class="card">
       <div class="ritual-head">
-        <h3>Rating Rituals</h3>
-        <div class="ritual-controls" role="tablist" aria-label="Rating ritual view">
+        <h3>{{ i18n.t('fun.ratingRituals') }}</h3>
+        <div class="ritual-controls" role="tablist" [attr.aria-label]="i18n.t('fun.ritualViewLabel')">
           <button
             class="chip"
             type="button"
             [class.active]="ritualView() === 'month'"
             (click)="ritualView.set('month')"
           >
-            Month
+            {{ i18n.t('fun.month') }}
           </button>
           <button
             class="chip"
@@ -58,7 +63,7 @@
             [class.active]="ritualView() === 'weekday'"
             (click)="ritualView.set('weekday')"
           >
-            Weekday
+            {{ i18n.t('fun.weekday') }}
           </button>
           <button
             class="chip"
@@ -66,11 +71,11 @@
             [class.active]="ritualView() === 'year'"
             (click)="ritualView.set('year')"
           >
-            Year
+            {{ i18n.t('fun.year') }}
           </button>
         </div>
       </div>
-      <p class="muted">Busiest: {{ busiestRitual().label }}.</p>
+      <p class="muted">{{ i18n.t('fun.busiest', { label: busiestRitual().label }) }}</p>
       <div
         class="rituals"
         [class.rituals-year]="ritualView() === 'year'"
@@ -86,79 +91,84 @@
     </article>
 
     <article class="card">
-      <h3>Weekday Metrics</h3>
+      <h3>{{ i18n.t('fun.weekdayMetrics') }}</h3>
       <p class="muted">
-        You rate the most often on:
+        {{ i18n.t('fun.mostOftenOn') }}
         <strong>{{ weekdayMetrics().busiest.label }}</strong>
         ({{ weekdayMetrics().busiest.count }}).
       </p>
       <p class="muted">
-        You rate the least often on:
+        {{ i18n.t('fun.leastOftenOn') }}
         <strong>{{ weekdayMetrics().quietest.label }}</strong>
         ({{ weekdayMetrics().quietest.count }}).
       </p>
     </article>
 
     <article class="card">
-      <h3>Busiest Date</h3>
+      <h3>{{ i18n.t('fun.busiestDate') }}</h3>
       @if (busiestDate()) {
-        <p class="value">{{ busiestDate()!.date.toLocaleDateString() }}</p>
-        <p class="muted">{{ busiestDate()!.count }} ratings on that day.</p>
+        <p class="value">{{ i18n.formatDate(busiestDate()!.date) }}</p>
+        <p class="muted">{{ i18n.t('fun.ratingsOnDay', { count: busiestDate()!.count }) }}</p>
       } @else {
-        <p class="muted">No rating dates found yet.</p>
+        <p class="muted">{{ i18n.t('fun.noDates') }}</p>
       }
     </article>
 
     <article class="card">
-      <h3>Same‑Score Streak</h3>
+      <h3>{{ i18n.t('fun.sameScoreStreak') }}</h3>
       @if (ratingStreak()) {
-        <p class="value">{{ ratingStreak()!.length }} in a row</p>
-        <p class="muted">Longest streak at {{ ratingStreak()!.rating.toFixed(1) }}.</p>
+        <p class="value">{{ i18n.t('fun.inARow', { count: ratingStreak()!.length }) }}</p>
+        <p class="muted">{{ i18n.t('fun.longestStreakAt', { rating: ratingStreak()!.rating.toFixed(1) }) }}</p>
         <p class="muted">
-          {{ ratingStreak()!.start.toLocaleDateString() }} – {{ ratingStreak()!.end.toLocaleDateString() }}
+          {{ i18n.formatDate(ratingStreak()!.start) }} – {{ i18n.formatDate(ratingStreak()!.end) }}
         </p>
       } @else {
-        <p class="muted">No streak data yet.</p>
+        <p class="muted">{{ i18n.t('fun.noStreak') }}</p>
       }
     </article>
     
     <article class="card">
-      <h3>Most Replayed Franchise</h3>
+      <h3>{{ i18n.t('fun.mostReplayed') }}</h3>
       @if (mostReplayedFranchise()) {
         <p class="value">{{ mostReplayedFranchise()!.name }}</p>
-        <p class="muted">{{ mostReplayedFranchise()!.count }} titles in your library.</p>
+        <p class="muted">{{ i18n.t('fun.replayedCount', { count: mostReplayedFranchise()!.count }) }}</p>
       } @else {
-        <p class="muted">No franchise data yet.</p>
+        <p class="muted">{{ i18n.t('fun.noFranchise') }}</p>
       }
     </article>
 
     <article class="card">
-      <h3>Most Polarizing Year</h3>
+      <h3>{{ i18n.t('fun.mostPolarizing') }}</h3>
       @if (mostPolarizingYear()) {
         <p class="value">{{ mostPolarizingYear()!.year }}</p>
-        <p class="muted">Spread {{ mostPolarizingYear()!.stdDev.toFixed(2) }} across {{ mostPolarizingYear()!.count }} ratings.</p>
+        <p class="muted">
+          {{ i18n.t('fun.spreadAcross', {
+            value: mostPolarizingYear()!.stdDev.toFixed(2),
+            count: mostPolarizingYear()!.count
+          }) }}
+        </p>
       } @else {
-        <p class="muted">Not enough ratings to measure.</p>
+        <p class="muted">{{ i18n.t('fun.notEnoughRatings') }}</p>
       }
     </article>
 
     <article class="card">
-      <h3>Peak Year</h3>
+      <h3>{{ i18n.t('fun.peakYear') }}</h3>
       @if (busiestYear()) {
         <p class="value">{{ busiestYear()!.year }}</p>
-        <p class="muted">{{ busiestYear()!.count }} ratings that year.</p>
+        <p class="muted">{{ i18n.t('fun.peakYearCount', { count: busiestYear()!.count }) }}</p>
       } @else {
-        <p class="muted">No year data yet.</p>
+        <p class="muted">{{ i18n.t('fun.noYearData') }}</p>
       }
     </article>
 
     <article class="card">
-      <h3>Epic Title</h3>
+      <h3>{{ i18n.t('fun.epicTitle') }}</h3>
       @if (longestTitle()) {
         <p class="value">{{ longestTitle()!.title }}</p>
-        <p class="muted">{{ longestTitle()!.length }} characters long.</p>
+        <p class="muted">{{ i18n.t('fun.titleLength', { count: longestTitle()!.length }) }}</p>
       } @else {
-        <p class="muted">No titles found yet.</p>
+        <p class="muted">{{ i18n.t('fun.noTitles') }}</p>
       }
     </article>
   </div>

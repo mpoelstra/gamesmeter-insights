@@ -1,7 +1,8 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { parseCsv, toVoteRows } from '../csv';
 import { buildGamerProfile, buildGeneralStats, buildTrendInsight, buildYearSummaries } from '../insights';
 import { GamerProfile, GeneralStats, TrendInsight, VoteRow, YearSummary } from '../models';
+import { I18nService } from '../i18n.service';
 
 export type DataStatus = 'empty' | 'ready' | 'error';
 
@@ -11,14 +12,17 @@ export type DataStatus = 'empty' | 'ready' | 'error';
 export class InsightsService {
   private readonly storageKey = 'gamesmeter:lastCsv';
   private readonly rows = signal<VoteRow[]>([]);
+  private readonly i18n = inject(I18nService);
   readonly allRows = computed<VoteRow[]>(() => this.rows());
   readonly fileName = signal<string | null>(null);
   readonly status = signal<DataStatus>('empty');
 
   readonly yearSummaries = computed<YearSummary[]>(() => buildYearSummaries(this.rows()));
-  readonly stats = computed<GeneralStats>(() => buildGeneralStats(this.rows()));
-  readonly trend = computed<TrendInsight>(() => buildTrendInsight(this.yearSummaries()));
-  readonly profile = computed<GamerProfile>(() => buildGamerProfile(this.stats(), this.trend(), this.yearSummaries()));
+  readonly stats = computed<GeneralStats>(() => buildGeneralStats(this.rows(), this.i18n.t('label.platformUnknown')));
+  readonly trend = computed<TrendInsight>(() => buildTrendInsight(this.yearSummaries(), this.i18n.t.bind(this.i18n)));
+  readonly profile = computed<GamerProfile>(() =>
+    buildGamerProfile(this.stats(), this.trend(), this.yearSummaries(), this.i18n.t.bind(this.i18n)),
+  );
   readonly highestRatedYears = computed(() =>
     [...this.yearSummaries()]
       .filter(summary => summary.count >= 3)
@@ -68,7 +72,7 @@ export class InsightsService {
       const parsed = parseCsv(cached.text);
       const rows = toVoteRows(parsed);
       this.rows.set(rows);
-      this.fileName.set(cached.name ?? 'Cached CSV');
+      this.fileName.set(cached.name ?? this.i18n.t('file.cached'));
       this.status.set('ready');
     } catch (error) {
       console.warn('Unable to restore cached CSV', error);

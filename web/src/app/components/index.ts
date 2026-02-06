@@ -7,7 +7,6 @@ export { HiddenGemsCardComponent } from './hidden-gems-card/hidden-gems-card.com
 export { HighestRatedYearsCardComponent } from './highest-rated-years-card/highest-rated-years-card.component';
 export { PlatformPeaksCardComponent } from './platform-peaks-card/platform-peaks-card.component';
 export { PlatformsDashboardComponent } from './platforms-dashboard/platforms-dashboard.component';
-export { PlatformsCardComponent } from './platforms-card/platforms-card.component';
 export { RatingsDistributionCardComponent } from './ratings-distribution-card/ratings-distribution-card.component';
 export { TrendSummaryCardComponent } from './trend-summary-card/trend-summary-card.component';
 export { TrendTimelineCardComponent } from './trend-timeline-card/trend-timeline-card.component';

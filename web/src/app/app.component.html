@@ -1,22 +1,29 @@
 <div class="page">
   <header class="hero">
     <div>
-      <p class="eyebrow">GamesMeter Insights</p>
-      <h1>Your gaming life, quantified</h1>
+      <p class="eyebrow">{{ i18n.t('hero.eyebrow') }}</p>
+      <h1>{{ i18n.t('hero.title') }}</h1>
       <p class="subtitle">
-        Upload your GamesMeter CSV and get a professional report: trends, year leaders, rating habits, and a snapshot of
-        the gamer you are.
+        {{ i18n.t('hero.subtitle') }}
       </p>
     </div>
     <div class="hero-panel">
+      <div class="lang-switch">
+        <button type="button" [class.active]="i18n.lang() === 'en'" (click)="i18n.setLang('en')">
+          {{ i18n.t('lang.en') }}
+        </button>
+        <button type="button" [class.active]="i18n.lang() === 'nl'" (click)="i18n.setLang('nl')">
+          {{ i18n.t('lang.nl') }}
+        </button>
+      </div>
       <div class="upload">
         <label class="upload-button" [class.has-file]="fileName() !== null">
           <input type="file" accept=".csv" (change)="onFileSelected($event)" />
-          <span>{{ fileName() ?? 'Upload CSV' }}</span>
+          <span>{{ fileName() ?? i18n.t('upload.button') }}</span>
         </label>
-        <button class="ghost" type="button" (click)="loadSample()">Use sample data</button>
+        <button class="ghost" type="button" (click)="loadSample()">{{ i18n.t('upload.sample') }}</button>
         @if (status() === 'ready') {
-          <button class="ghost" type="button" (click)="clearCache()">Clear data</button>
+          <button class="ghost" type="button" (click)="clearCache()">{{ i18n.t('upload.clear') }}</button>
         }
       </div>
       <div class="status" [class.error]="status() === 'error'">
@@ -24,9 +31,9 @@
       </div>
       @if (stats().total > 0) {
         <div class="meta">
-          <span>{{ stats().total }} titles</span>
-          <span>{{ stats().ratedCount }} rated</span>
-          <span>Average {{ stats().average.toFixed(2) }}</span>
+          <span>{{ i18n.t('meta.titles', { count: stats().total }) }}</span>
+          <span>{{ i18n.t('meta.rated', { count: stats().ratedCount }) }}</span>
+          <span>{{ i18n.t('meta.average', { value: stats().average.toFixed(2) }) }}</span>
         </div>
       }
     </div>
@@ -34,20 +41,34 @@
 
   @if (stats().total > 0) {
     <section class="tabs">
-      <button type="button" (click)="setTab('overview')" [class.active]="activeTab() === 'overview'">Overview</button>
-      <button type="button" (click)="setTab('timeline')" [class.active]="activeTab() === 'timeline'">Timeline</button>
-      <button type="button" (click)="setTab('platforms')" [class.active]="activeTab() === 'platforms'">Platforms</button>
-      <button type="button" (click)="setTab('games')" [class.active]="activeTab() === 'games'">Best Games</button>
-      <button type="button" (click)="setTab('fun')" [class.active]="activeTab() === 'fun'">Fun Stats</button>
-      <button type="button" (click)="setTab('gems')" [class.active]="activeTab() === 'gems'">Hidden Gems</button>
-      <button type="button" (click)="setTab('library')" [class.active]="activeTab() === 'library'">Game Library</button>
+      <button type="button" (click)="setTab('overview')" [class.active]="activeTab() === 'overview'">
+        {{ i18n.t('tabs.overview') }}
+      </button>
+      <button type="button" (click)="setTab('timeline')" [class.active]="activeTab() === 'timeline'">
+        {{ i18n.t('tabs.timeline') }}
+      </button>
+      <button type="button" (click)="setTab('platforms')" [class.active]="activeTab() === 'platforms'">
+        {{ i18n.t('tabs.platforms') }}
+      </button>
+      <button type="button" (click)="setTab('games')" [class.active]="activeTab() === 'games'">
+        {{ i18n.t('tabs.games') }}
+      </button>
+      <button type="button" (click)="setTab('fun')" [class.active]="activeTab() === 'fun'">
+        {{ i18n.t('tabs.fun') }}
+      </button>
+      <button type="button" (click)="setTab('gems')" [class.active]="activeTab() === 'gems'">
+        {{ i18n.t('tabs.gems') }}
+      </button>
+      <button type="button" (click)="setTab('library')" [class.active]="activeTab() === 'library'">
+        {{ i18n.t('tabs.library') }}
+      </button>
     </section>
   }
 
   @if (stats().total === 0) {
     <section class="empty">
-      <h2>No data yet</h2>
-      <p>Upload your GamesMeter CSV to generate the report. The data never leaves your browser.</p>
+      <h2>{{ i18n.t('empty.title') }}</h2>
+      <p>{{ i18n.t('empty.body') }}</p>
     </section>
   } @else {
     @if (activeTab() === 'overview') {

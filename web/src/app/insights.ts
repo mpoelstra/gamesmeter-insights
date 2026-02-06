@@ -40,10 +40,10 @@ export function buildYearSummaries(rows: VoteRow[]): YearSummary[] {
     .sort((a, b) => b.year - a.year);
 }
 
-export function buildGeneralStats(rows: VoteRow[]): GeneralStats {
+export function buildGeneralStats(rows: VoteRow[], unknownLabel = 'Unknown'): GeneralStats {
   const ratings = rows.map(row => row.rating).filter((value): value is number => value !== null);
   const years = rows.map(row => row.year).filter((value): value is number => value !== null);
-  const platformCounts = countBy(rows, row => row.platform ?? 'Unknown');
+  const platformCounts = countBy(rows, row => row.platform ?? unknownLabel, unknownLabel);
 
   return {
     total: rows.length,
@@ -60,7 +60,10 @@ export function buildGeneralStats(rows: VoteRow[]): GeneralStats {
   } satisfies GeneralStats;
 }
 
-export function buildTrendInsight(years: YearSummary[]): TrendInsight {
+export function buildTrendInsight(
+  years: YearSummary[],
+  t: (key: string, params?: Record<string, string | number>) => string,
+): TrendInsight {
   const points = years
     .map(summary => ({ year: summary.year, value: summary.average }))
     .sort((a, b) => a.year - b.year);
@@ -70,7 +73,7 @@ export function buildTrendInsight(years: YearSummary[]): TrendInsight {
       direction: 'flat',
       slope: 0,
       points,
-      summary: 'Not enough yearly data to measure a trend yet.',
+      summary: t('trend.notEnough'),
     } satisfies TrendInsight;
   }
 
@@ -81,75 +84,102 @@ export function buildTrendInsight(years: YearSummary[]): TrendInsight {
   const direction = Math.abs(slope) < 0.03 ? 'flat' : slope > 0 ? 'up' : 'down';
   const summary =
     direction === 'flat'
-      ? 'Your average scores are stable across the years.'
+      ? t('trend.flat')
       : direction === 'up'
-        ? 'Your average scores are trending upward over time.'
-        : 'Your average scores are trending downward over time.';
+        ? t('trend.up')
+        : t('trend.down');
 
   return { direction, slope, points, summary } satisfies TrendInsight;
 }
 
-export function buildGamerProfile(stats: GeneralStats, trend: TrendInsight, years: YearSummary[]): GamerProfile {
-  const generosity = stats.average >= 3.6 ? 'Generous' : stats.average <= 2.6 ? 'Tough' : 'Balanced';
-  const consistency = stats.stdDev <= 0.8 ? 'Consistent' : stats.stdDev >= 1.3 ? 'Wide-ranging' : 'Selective';
-  const pace = stats.total >= 600 ? 'Marathon' : stats.total >= 250 ? 'Steady' : 'Curated';
+export function buildGamerProfile(
+  stats: GeneralStats,
+  trend: TrendInsight,
+  years: YearSummary[],
+  t: (key: string, params?: Record<string, string | number>) => string,
+): GamerProfile {
+  const generosity =
+    stats.average >= 3.6 ? t('profile.generous') : stats.average <= 2.6 ? t('profile.tough') : t('profile.balanced');
+  const consistency =
+    stats.stdDev <= 0.8
+      ? t('profile.consistent')
+      : stats.stdDev >= 1.3
+        ? t('profile.wide')
+        : t('profile.selective');
+  const pace = stats.total >= 600 ? t('profile.marathon') : stats.total >= 250 ? t('profile.steady') : t('profile.curated');
 
   const topPlatforms = stats.platformCounts.slice(0, 3).map(item => item.name).join(', ');
-  const topPlatformShort = stats.platformCounts[0]?.name ?? 'varied systems';
+  const topPlatformShort = stats.platformCounts[0]?.name ?? t('profile.variedSystems');
   const trendNote =
     trend.direction === 'flat'
-      ? 'steady taste'
+      ? t('profile.trend.steady')
       : trend.direction === 'up'
-        ? 'warming up'
-        : 'growing more critical';
+        ? t('profile.trend.warming')
+        : t('profile.trend.critical');
 
   const mostRatedYear = [...years].sort((a, b) => b.count - a.count)[0];
   const bestYear = [...years]
     .filter(year => year.count >= 3)
     .sort((a, b) => b.average - a.average)[0];
   const bestDecade = computeBestDecade(years);
-  const ratingMode = computeRatingMode(stats);
+  const ratingMode = computeRatingMode(stats, t);
 
-  const lead =
-    `Your average score of ${formatRating(stats.average)} with a standard deviation of ${stats.stdDev.toFixed(2)} suggests a ${consistency.toLowerCase()} scoring style.`;
+  const lead = t('profile.lead', {
+    average: formatRating(stats.average),
+    stdDev: stats.stdDev.toFixed(2),
+    consistencyLower: consistency.toLowerCase(),
+  });
 
-  const description =
-    `You lean ${generosity.toLowerCase()} in your ratings, and your catalog spans ${stats.total} titles from ${stats.firstYear ?? 'N/A'} to ${stats.lastYear ?? 'N/A'}. ` +
-    `Top platforms include ${topPlatforms || 'multiple systems'}. ` +
-    `Your most common score is ${ratingMode}. ` +
-    (bestDecade ? `Your highest average decade is the ${bestDecade.label}. ` : '') +
-    formatHighlights(bestYear, mostRatedYear) +
-    ` Overall, your taste clusters around ${topPlatformShort}, with a ${trendNote} over time.`;
+  const description = t('profile.description', {
+    generosityLower: generosity.toLowerCase(),
+    total: stats.total,
+    firstYear: stats.firstYear ?? t('profile.ratingMode.na'),
+    lastYear: stats.lastYear ?? t('profile.ratingMode.na'),
+    topPlatforms: topPlatforms || t('profile.multipleSystems'),
+    ratingMode,
+    bestDecade: bestDecade ? t('profile.bestDecade', { decade: bestDecade.label }) : '',
+    highlights: formatHighlights(bestYear, mostRatedYear, t),
+    topPlatformShort,
+    trendNote,
+  });
 
   return {
-    title: `${generosity} ${consistency} Gamer`,
-    subtitle: `${pace} library with a ${trendNote}`,
+    title: t('profile.title', { generosity, consistency }),
+    subtitle: t('profile.subtitle', { pace, trendNote }),
     lead,
     description,
     traits: [
-      `${generosity} rater`,
-      `${consistency} scorer`,
-      `Top platforms: ${topPlatforms || 'Varied'}`,
-      `${pace} player`,
+      t('profile.trait.generosity', { generosity }),
+      t('profile.trait.consistency', { consistency }),
+      t('profile.trait.platforms', { topPlatforms: topPlatforms || t('profile.traits.varied') }),
+      t('profile.trait.pace', { pace }),
     ],
   } satisfies GamerProfile;
 }
 
-function formatHighlights(bestYear?: YearSummary, mostRatedYear?: YearSummary): string {
+function formatHighlights(
+  bestYear: YearSummary | undefined,
+  mostRatedYear: YearSummary | undefined,
+  t: (key: string, params?: Record<string, string | number>) => string,
+): string {
   const parts: string[] = [];
   if (bestYear) {
-    parts.push(`Your highest-rated year was ${bestYear.year} with an average of ${formatRating(bestYear.average)}.`);
+    parts.push(
+      t('profile.bestYear', { year: bestYear.year, avg: formatRating(bestYear.average) }),
+    );
   }
   if (mostRatedYear) {
-    parts.push(`Your busiest year was ${mostRatedYear.year} with ${mostRatedYear.count} rated games.`);
+    parts.push(
+      t('profile.busiestYear', { year: mostRatedYear.year, count: mostRatedYear.count }),
+    );
   }
   return parts.join(' ');
 }
 
-function computeRatingMode(stats: GeneralStats): string {
+function computeRatingMode(stats: GeneralStats, t: (key: string, params?: Record<string, string | number>) => string): string {
   const sorted = [...stats.ratingBuckets].sort((a, b) => b.count - a.count);
   const top = sorted[0];
-  return top ? `${top.label}` : 'N/A';
+  return top ? `${top.label}` : t('profile.ratingMode.na');
 }
 
 function computeBestDecade(years: YearSummary[]): { label: string; average: number } | null {
@@ -191,10 +221,14 @@ function buildBuckets(ratings: number[]): Array<{ label: string; count: number }
   return buckets;
 }
 
-function countBy<T>(items: T[], getKey: (item: T) => string): Array<{ name: string; count: number }> {
+function countBy<T>(
+  items: T[],
+  getKey: (item: T) => string,
+  fallback = 'Unknown',
+): Array<{ name: string; count: number }> {
   const map = new Map<string, number>();
   for (const item of items) {
-    const key = getKey(item) || 'Unknown';
+    const key = getKey(item) || fallback;
     map.set(key, (map.get(key) ?? 0) + 1);
   }
   return [...map.entries()]

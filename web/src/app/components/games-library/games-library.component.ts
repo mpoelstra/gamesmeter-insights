@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, afterRenderEffect, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, afterRenderEffect, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VoteRow } from '../../models';
+import { I18nService } from '../../i18n.service';
 
 interface GameGroup {
   letter: string;
@@ -18,6 +19,7 @@ interface GameGroup {
 export class GamesLibraryComponent implements OnDestroy {
   readonly rows = input.required<VoteRow[]>();
   readonly initialPlatform = input<string>('all');
+  readonly i18n = inject(I18nService);
   readonly query = signal('');
   readonly platformFilter = signal('all');
   readonly ratingFilter = signal<string>('all');
@@ -154,9 +156,14 @@ export class GamesLibraryComponent implements OnDestroy {
   }
 
   get ratingOptions(): Array<{ label: string; value: string }> {
-    const options: Array<{ label: string; value: string }> = [{ label: 'All ratings', value: 'all' }];
+    const options: Array<{ label: string; value: string }> = [
+      { label: this.i18n.t('filters.allRatings'), value: 'all' },
+    ];
     for (let value = 5; value >= 0.5; value -= 0.5) {
-      const label = value === 5 ? '5.0 only' : `${value.toFixed(1)} and above`;
+      const label =
+        value === 5
+          ? this.i18n.t('filters.ratingOnly', { value: value.toFixed(1) })
+          : this.i18n.t('filters.ratingAndAbove', { value: value.toFixed(1) });
       options.push({ label, value: value.toFixed(1) });
     }
     return options;

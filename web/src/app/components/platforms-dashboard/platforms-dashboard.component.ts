@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { VoteRow } from '../../models';
+import { I18nService } from '../../i18n.service';
 
 interface PlatformStats {
   name: string;
@@ -36,10 +37,15 @@ interface EraPeak {
 })
 export class PlatformsDashboardComponent {
   readonly rows = input.required<VoteRow[]>();
+  readonly i18n = inject(I18nService);
 
-  readonly platforms = computed<PlatformStats[]>(() => buildPlatformStats(this.rows()));
+  readonly platforms = computed<PlatformStats[]>(() =>
+    buildPlatformStats(this.rows(), this.i18n.t('label.platformUnknown')),
+  );
   readonly topPlatforms = computed(() => this.platforms().slice(0, 6));
-  readonly yearSeries = computed(() => buildYearPlatform(this.rows()));
+  readonly yearSeries = computed(() =>
+    buildYearPlatform(this.rows(), this.i18n.t('label.platformUnknown')),
+  );
   readonly years = computed(() => [...new Set(this.yearSeries().map(item => item.year))].sort((a, b) => a - b));
   readonly platformNames = computed(() => this.topPlatforms().map(item => item.name));
   readonly eraPeaks = computed(() => buildEraPeaks(this.yearSeries()));
@@ -65,15 +71,22 @@ export class PlatformsDashboardComponent {
     };
   }
 
-  readonly ribbonOptions: ChartConfiguration<'line'>['options'] = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: { grid: { display: false } },
-      y: { min: 0.5, max: 5, ticks: { stepSize: 0.5 }, title: { display: true, text: 'Avg Rating' } },
-    },
-    plugins: { legend: { position: 'bottom' } },
-  };
+  get ribbonOptions(): ChartConfiguration<'line'>['options'] {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { grid: { display: false } },
+        y: {
+          min: 0.5,
+          max: 5,
+          ticks: { stepSize: 0.5 },
+          title: { display: true, text: this.i18n.t('chart.avgRating') },
+        },
+      },
+      plugins: { legend: { position: 'bottom' } },
+    };
+  }
 
   get eraBandsData(): ChartData<'line'> {
     const labels = this.years().map(year => String(year));
@@ -92,15 +105,17 @@ export class PlatformsDashboardComponent {
     };
   }
 
-  readonly eraBandsOptions: ChartConfiguration<'line'>['options'] = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: { stacked: true, grid: { display: false } },
-      y: { stacked: true, beginAtZero: true, title: { display: true, text: 'Games Rated' } },
-    },
-    plugins: { legend: { position: 'bottom' } },
-  };
+  get eraBandsOptions(): ChartConfiguration<'line'>['options'] {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { stacked: true, grid: { display: false } },
+        y: { stacked: true, beginAtZero: true, title: { display: true, text: this.i18n.t('chart.gamesRated') } },
+      },
+      plugins: { legend: { position: 'bottom' } },
+    };
+  }
 
 
   get bubbleData(): ChartData<'bubble'> {
@@ -118,7 +133,7 @@ export class PlatformsDashboardComponent {
     return {
       datasets: [
         {
-          label: 'Platform Drift',
+          label: this.i18n.t('platforms.platformDrift'),
           data: points,
           backgroundColor: points.map(point => transparentize(palette(names.indexOf(point.platform)), 0.35)),
           borderColor: points.map(point => palette(names.indexOf(point.platform))),
@@ -128,26 +143,33 @@ export class PlatformsDashboardComponent {
     };
   }
 
-  readonly bubbleOptions: ChartConfiguration<'bubble'>['options'] = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: { type: 'linear', title: { display: true, text: 'Year' } },
-      y: { min: 0.5, max: 5, ticks: { stepSize: 0.5 }, title: { display: true, text: 'Avg Rating' } },
-    },
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        callbacks: {
-          label: context => {
-            const raw = context.raw as { x: number; y: number; r: number; platform?: string };
-            const platform = raw.platform ?? 'Platform';
-            return `${platform}: ${raw.y}`;
+  get bubbleOptions(): ChartConfiguration<'bubble'>['options'] {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { type: 'linear', title: { display: true, text: this.i18n.t('chart.year') } },
+        y: {
+          min: 0.5,
+          max: 5,
+          ticks: { stepSize: 0.5 },
+          title: { display: true, text: this.i18n.t('chart.avgRating') },
+        },
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: context => {
+              const raw = context.raw as { x: number; y: number; r: number; platform?: string };
+              const platform = raw.platform ?? this.i18n.t('chart.platform');
+              return `${platform}: ${raw.y}`;
+            },
           },
         },
       },
-    },
-  };
+    };
+  }
 
   readonly signature = computed(() => {
     const list = this.platforms();
@@ -163,13 +185,13 @@ export class PlatformsDashboardComponent {
   });
 }
 
-function buildPlatformStats(rows: VoteRow[]): PlatformStats[] {
+function buildPlatformStats(rows: VoteRow[], unknownLabel: string): PlatformStats[] {
   const map = new Map<string, number[]>();
   for (const row of rows) {
     if (row.rating === null) {
       continue;
     }
-    const platform = row.platform ?? 'Unknown';
+    const platform = row.platform ?? unknownLabel;
     const list = map.get(platform) ?? [];
     list.push(row.rating);
     map.set(platform, list);
@@ -184,13 +206,13 @@ function buildPlatformStats(rows: VoteRow[]): PlatformStats[] {
     .sort((a, b) => b.count - a.count);
 }
 
-function buildYearPlatform(rows: VoteRow[]): YearPlatform[] {
+function buildYearPlatform(rows: VoteRow[], unknownLabel: string): YearPlatform[] {
   const map = new Map<string, { total: number; count: number }>();
   for (const row of rows) {
     if (row.rating === null || row.year === null) {
       continue;
     }
-    const key = `${row.year}|${row.platform ?? 'Unknown'}`;
+    const key = `${row.year}|${row.platform ?? unknownLabel}`;
     const entry = map.get(key) ?? { total: 0, count: 0 };
     entry.total += row.rating;
     entry.count += 1;
@@ -199,7 +221,7 @@ function buildYearPlatform(rows: VoteRow[]): YearPlatform[] {
   return [...map.entries()].map(([key, data]) => {
     const [yearRaw, platformRaw] = key.split('|');
     const year = Number(yearRaw);
-    const platform = platformRaw ?? 'Unknown';
+    const platform = platformRaw ?? unknownLabel;
     return { year, platform, count: data.count, average: data.total / Math.max(data.count, 1) };
   });
 }

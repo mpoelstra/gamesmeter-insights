@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VoteRow } from '../../models';
+import { I18nService } from '../../i18n.service';
 
 interface MonthStat {
   label: string;
@@ -22,6 +23,7 @@ interface RitualStat {
 })
 export class FunStatsDashboardComponent {
   readonly rows = input.required<VoteRow[]>();
+  readonly i18n = inject(I18nService);
 
   readonly ratedRows = computed(() => this.rows().filter(row => row.rating !== null));
   readonly ritualView = signal<'month' | 'weekday' | 'year'>('month');
@@ -77,7 +79,7 @@ export class FunStatsDashboardComponent {
         counts[month] = (counts[month] ?? 0) + 1;
       }
     }
-    const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const labels = this.i18n.monthLabels(true);
     return labels.map((label, index) => ({ label, count: counts[index] ?? 0 }));
   });
 
@@ -91,7 +93,7 @@ export class FunStatsDashboardComponent {
         }
         counts[row.placed.getDay()] = (counts[row.placed.getDay()] ?? 0) + 1;
       }
-      const labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const labels = this.i18n.weekdayLabels(true);
       return labels.map((label, index) => ({ label, count: counts[index] ?? 0 }));
     }
     if (view === 'year') {
@@ -130,9 +132,9 @@ export class FunStatsDashboardComponent {
       return { busiest: { label: 'N/A', count: 0 }, quietest: { label: 'N/A', count: 0 } };
     }
     const counts = new Map<string, number>();
-    const labels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const labels = this.i18n.weekdayLabels(false);
     for (const row of placed) {
-      const day = labels[row.placed.getDay()] ?? 'Unknown';
+      const day = labels[row.placed.getDay()] ?? this.i18n.t('label.na');
       counts.set(day, (counts.get(day) ?? 0) + 1);
     }
     let best = { label: 'N/A', count: 0 };
@@ -252,7 +254,7 @@ export class FunStatsDashboardComponent {
   readonly platformPersonality = computed(() => {
     const map = new Map<string, number[]>();
     for (const row of this.ratedRows()) {
-      const platform = row.platform ?? 'Unknown';
+      const platform = row.platform ?? this.i18n.t('label.platformUnknown');
       const list = map.get(platform) ?? [];
       list.push(row.rating ?? 0);
       map.set(platform, list);
@@ -267,9 +269,13 @@ export class FunStatsDashboardComponent {
     if (!top) {
       return null;
     }
-    const generosity = top.average >= 3.7 ? 'generous' : top.average <= 2.6 ? 'tough' : 'balanced';
-    const consistency = top.stdDev <= 0.8 ? 'steady' : top.stdDev >= 1.3 ? 'wild' : 'varied';
-    return `${top.name} is your ${generosity}, ${consistency} platform.`;
+    const generosityKey = top.average >= 3.7 ? 'personality.generous' : top.average <= 2.6 ? 'personality.tough' : 'personality.balanced';
+    const consistencyKey = top.stdDev <= 0.8 ? 'personality.steady' : top.stdDev >= 1.3 ? 'personality.wild' : 'personality.varied';
+    return this.i18n.t('personality.platformLine', {
+      platform: top.name,
+      generosity: this.i18n.t(generosityKey),
+      consistency: this.i18n.t(consistencyKey),
+    });
   });
 
   readonly mostReplayedFranchise = computed(() => {

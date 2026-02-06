@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { YearSummary } from '../../models';
+import { I18nService } from '../../i18n.service';
 
 @Component({
   selector: 'app-year-averages-card',
@@ -14,6 +15,7 @@ import { YearSummary } from '../../models';
 })
 export class YearAveragesCardComponent {
   readonly summaries = input.required<YearSummary[]>();
+  readonly i18n = inject(I18nService);
 
   readonly chartType: ChartType = 'bar';
 
@@ -28,7 +30,7 @@ export class YearAveragesCardComponent {
       datasets: [
         {
           type: 'bar',
-          label: 'Games Rated',
+          label: this.i18n.t('chart.gamesRated'),
           data: counts,
           yAxisID: 'y1',
           backgroundColor: 'rgba(15, 107, 95, 0.15)',
@@ -38,7 +40,7 @@ export class YearAveragesCardComponent {
         },
         {
           type: 'line',
-          label: 'Average Rating',
+          label: this.i18n.t('chart.averageRating'),
           data: averages,
           yAxisID: 'y',
           borderColor: '#0f6b5f',
@@ -50,30 +52,32 @@ export class YearAveragesCardComponent {
     };
   }
 
-  readonly chartOptions: ChartConfiguration<'bar' | 'line'>['options'] = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: {
-        grid: { display: false },
+  get chartOptions(): ChartConfiguration<'bar' | 'line'>['options'] {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          grid: { display: false },
+        },
+        y: {
+          position: 'left',
+          min: 0.5,
+          max: 5,
+          ticks: { stepSize: 0.5 },
+          title: { display: true, text: this.i18n.t('chart.avgRating') },
+        },
+        y1: {
+          position: 'right',
+          grid: { drawOnChartArea: false },
+          title: { display: true, text: this.i18n.t('chart.gamesRated') },
+          beginAtZero: true,
+        },
       },
-      y: {
-        position: 'left',
-        min: 0.5,
-        max: 5,
-        ticks: { stepSize: 0.5 },
-        title: { display: true, text: 'Avg Rating' },
+      plugins: {
+        legend: { position: 'bottom' },
+        tooltip: { enabled: true },
       },
-      y1: {
-        position: 'right',
-        grid: { drawOnChartArea: false },
-        title: { display: true, text: 'Games Rated' },
-        beginAtZero: true,
-      },
-    },
-    plugins: {
-      legend: { position: 'bottom' },
-      tooltip: { enabled: true },
-    },
-  };
+    };
+  }
 }

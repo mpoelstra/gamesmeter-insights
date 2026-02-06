@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { YearSummary } from '../../models';
+import { I18nService } from '../../i18n.service';
 
 @Component({
   selector: 'app-highest-rated-years-card',
@@ -14,6 +15,7 @@ import { YearSummary } from '../../models';
 })
 export class HighestRatedYearsCardComponent {
   readonly years = input.required<YearSummary[]>();
+  readonly i18n = inject(I18nService);
 
   readonly chartType: ChartType = 'bar';
 
@@ -24,7 +26,7 @@ export class HighestRatedYearsCardComponent {
       datasets: [
         {
           data: sorted.map(item => Number(item.average.toFixed(2))),
-          label: 'Average Rating',
+          label: this.i18n.t('chart.averageRating'),
           backgroundColor: 'rgba(15, 107, 95, 0.35)',
           borderColor: '#0f6b5f',
           borderWidth: 2,
@@ -38,31 +40,33 @@ export class HighestRatedYearsCardComponent {
     return [...this.years()].sort((a, b) => b.average - a.average).slice(0, 5).map(item => item.count);
   }
 
-  readonly chartOptions: ChartConfiguration<'bar'>['options'] = {
-    responsive: true,
-    maintainAspectRatio: false,
-    indexAxis: 'y',
-    scales: {
-      x: {
-        min: 0.5,
-        max: 5,
-        ticks: { stepSize: 0.5 },
-        title: { display: true, text: 'Avg Rating' },
+  get chartOptions(): ChartConfiguration<'bar'>['options'] {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: 'y',
+      scales: {
+        x: {
+          min: 0.5,
+          max: 5,
+          ticks: { stepSize: 0.5 },
+          title: { display: true, text: this.i18n.t('chart.avgRating') },
+        },
+        y: {
+          grid: { display: false },
+        },
       },
-      y: {
-        grid: { display: false },
-      },
-    },
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        callbacks: {
-          label: context => {
-            const count = this.counts[context.dataIndex] ?? 0;
-            return `Avg ${context.parsed.x} • ${count} games`;
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: context => {
+              const count = this.counts[context.dataIndex] ?? 0;
+              return `${this.i18n.t('label.avg')} ${context.parsed.x} • ${count} ${this.i18n.t('label.games')}`;
+            },
           },
         },
       },
-    },
-  };
+    };
+  }
 }

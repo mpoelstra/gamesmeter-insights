@@ -1,9 +1,9 @@
 <article class="card">
-  <h3>Trend Summary</h3>
+  <h3>{{ i18n.t('card.trendSummary') }}</h3>
   <p class="trend-summary">{{ trend().summary }}</p>
   <div class="trend-metric">
-    <span>Yearly slope</span>
+    <span>{{ i18n.t('trend.yearlySlope') }}</span>
     <span>{{ trend().slope.toFixed(3) }}</span>
   </div>
-  <p class="muted">Positive means your scores rise over time; negative means you are rating more critically.</p>
+  <p class="muted">{{ i18n.t('trend.slopeNote') }}</p>
 </article>
