@@ -1,12 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, afterRenderEffect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, afterRenderEffect, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VoteRow } from '../../models';
 import { I18nService } from '../../i18n.service';
-
-interface GameGroup {
-  letter: string;
-  items: VoteRow[];
-}
 
 @Component({
   selector: 'app-games-library',
@@ -16,7 +11,7 @@ interface GameGroup {
   templateUrl: './games-library.component.html',
   styleUrls: ['./games-library.component.css'],
 })
-export class GamesLibraryComponent implements OnDestroy {
+export class GamesLibraryComponent {
   readonly rows = input.required<VoteRow[]>();
   readonly initialPlatform = input<string>('all');
   readonly i18n = inject(I18nService);
@@ -25,10 +20,8 @@ export class GamesLibraryComponent implements OnDestroy {
   readonly ratingFilter = signal<string>('all');
   readonly yearFilter = signal<string>('all');
   readonly ratedYearFilter = signal<string>('all');
-  readonly activeLetter = signal<string | null>(null);
-  private observer: IntersectionObserver | null = null;
-  private isAutoScrolling = false;
-  private autoScrollTarget: string | null = null;
+  readonly sortFilter = signal<string>('title');
+  readonly letterFilter = signal<string>('all');
   private readonly appliedInitial = signal(false);
 
   get filteredRows(): VoteRow[] {
@@ -37,6 +30,7 @@ export class GamesLibraryComponent implements OnDestroy {
     const ratingFilter = this.ratingFilter();
     const yearFilter = this.yearFilter();
     const ratedYearFilter = this.ratedYearFilter();
+    const letterFilter = this.letterFilter();
     const minRating = ratingFilter === 'all' ? null : Number(ratingFilter);
 
     return this.rows().filter(row => {
@@ -45,9 +39,11 @@ export class GamesLibraryComponent implements OnDestroy {
       const matchesYear = yearFilter === 'all' || String(row.year ?? '') === yearFilter;
       const ratedYear = row.placed ? String(row.placed.getFullYear()) : '';
       const matchesRatedYear = ratedYearFilter === 'all' || ratedYear === ratedYearFilter;
+      const letter = firstLetter(row.title);
+      const matchesLetter = letterFilter === 'all' || letter === letterFilter;
       const rating = row.rating ?? 0;
       const matchesRating = minRating === null ? true : rating >= minRating;
-      return matchesQuery && matchesPlatform && matchesRating && matchesYear && matchesRatedYear;
+      return matchesQuery && matchesPlatform && matchesRating && matchesYear && matchesRatedYear && matchesLetter;
     });
   }
 
@@ -83,42 +79,22 @@ export class GamesLibraryComponent implements OnDestroy {
     return ['all', ...sorted.map(year => String(year))];
   }
 
-
-  get groups(): GameGroup[] {
-    const map = new Map<string, VoteRow[]>();
-    const sorted = [...this.filteredRows].sort((a, b) => a.title.localeCompare(b.title));
-    for (const row of sorted) {
-      const letter = firstLetter(row.title);
-      const list = map.get(letter) ?? [];
-      list.push(row);
-      map.set(letter, list);
+  get letters(): string[] {
+    const letterSet = new Set<string>();
+    for (const row of this.rows()) {
+      letterSet.add(firstLetter(row.title));
     }
-    return [...map.entries()]
-      .map(([letter, items]) => ({ letter, items }))
-      .sort((a, b) => a.letter.localeCompare(b.letter));
+    const sorted = [...letterSet].sort((a, b) => a.localeCompare(b));
+    return ['all', ...sorted];
   }
 
-  get indexLetters(): string[] {
-    return this.groups.map(group => group.letter);
-  }
 
-  trackByLetter(index: number, group: GameGroup): string {
-    return group.letter;
+  get sortedRows(): VoteRow[] {
+    return this.sortRows(this.filteredRows);
   }
 
   trackByTitle(index: number, row: VoteRow): string {
     return `${row.title}-${row.year ?? 'x'}-${row.platform ?? 'x'}`;
-  }
-
-  scrollTo(letter: string) {
-    const target = document.getElementById(`letter-${letter}`);
-    if (!target) {
-      return;
-    }
-    this.activeLetter.set(letter);
-    this.isAutoScrolling = true;
-    this.autoScrollTarget = letter;
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   get totalCount(): number {
@@ -157,22 +133,38 @@ export class GamesLibraryComponent implements OnDestroy {
 
   updateQuery(value: string) {
     this.query.set(value);
-    this.setupObserver();
   }
 
   updatePlatform(value: string) {
     this.platformFilter.set(value);
-    this.setupObserver();
   }
 
   updateYear(value: string) {
     this.yearFilter.set(value);
-    this.setupObserver();
   }
 
   updateRatedYear(value: string) {
     this.ratedYearFilter.set(value);
-    this.setupObserver();
+  }
+
+  updateSort(value: string) {
+    this.sortFilter.set(value || 'title');
+  }
+
+  updateLetter(value: string) {
+    this.letterFilter.set(value || 'all');
+  }
+
+  get sortOptions(): Array<{ label: string; value: string }> {
+    return [
+      { label: this.i18n.t('filters.sortTitle'), value: 'title' },
+      { label: this.i18n.t('filters.sortRatingHigh'), value: 'ratingDesc' },
+      { label: this.i18n.t('filters.sortRatingLow'), value: 'ratingAsc' },
+      { label: this.i18n.t('filters.sortReleaseNew'), value: 'yearDesc' },
+      { label: this.i18n.t('filters.sortReleaseOld'), value: 'yearAsc' },
+      { label: this.i18n.t('filters.sortRatedNew'), value: 'ratedDesc' },
+      { label: this.i18n.t('filters.sortRatedOld'), value: 'ratedAsc' },
+    ];
   }
 
   get ratingOptions(): Array<{ label: string; value: string }> {
@@ -191,7 +183,16 @@ export class GamesLibraryComponent implements OnDestroy {
 
   updateRating(value: string) {
     this.ratingFilter.set(value || 'all');
-    this.setupObserver();
+  }
+
+  clearFilters() {
+    this.query.set('');
+    this.platformFilter.set('all');
+    this.yearFilter.set('all');
+    this.ratedYearFilter.set('all');
+    this.ratingFilter.set('all');
+    this.sortFilter.set('title');
+    this.letterFilter.set('all');
   }
 
   constructor() {
@@ -205,75 +206,44 @@ export class GamesLibraryComponent implements OnDestroy {
       }
       this.appliedInitial.set(true);
     });
-
-    afterRenderEffect(() => {
-      this.rows();
-      this.query();
-      this.platformFilter();
-      this.ratingFilter();
-      this.yearFilter();
-      this.ratedYearFilter();
-      this.setupObserver();
-      this.updateActiveFromCurrentScroll();
-    });
   }
 
-  ngOnDestroy(): void {
-    this.observer?.disconnect();
-  }
-
-  private setupObserver() {
-    if (typeof window === 'undefined') {
-      return;
-    }
-    this.observer?.disconnect();
-    const sections = document.querySelectorAll<HTMLElement>('.group-header[id^=\"letter-\"]');
-    if (sections.length === 0) {
-      return;
-    }
-    this.observer = new IntersectionObserver(
-      entries => {
-        const focusLine = 140;
-        const candidates = entries.filter(entry => entry.isIntersecting);
-        const best = candidates.sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (best?.target) {
-          const id = (best.target as HTMLElement).id;
-          const letter = id.replace('letter-', '');
-          if (this.isAutoScrolling) {
-            if (this.autoScrollTarget && letter === this.autoScrollTarget) {
-              this.activeLetter.set(letter);
-              this.isAutoScrolling = false;
-              this.autoScrollTarget = null;
-            }
-          } else {
-            this.activeLetter.set(letter);
-          }
-        }
-      },
-      { rootMargin: '0px 0px -60% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] },
-    );
-    sections.forEach(section => this.observer?.observe(section));
-  }
-
-  private updateActiveFromCurrentScroll() {
-    const sections = document.querySelectorAll<HTMLElement>('.group-header[id^="letter-"]');
-    if (sections.length === 0) {
-      return;
-    }
-    const focusLine = 140;
-    let current: HTMLElement | null = null;
-    for (const section of sections) {
-      const top = section.getBoundingClientRect().top;
-      if (top - focusLine <= 0) {
-        current = section;
-      } else {
+  private sortRows(rows: VoteRow[]): VoteRow[] {
+    const mode = this.sortFilter();
+    const sorted = [...rows];
+    switch (mode) {
+      case 'ratingDesc':
+        sorted.sort((a, b) => (b.rating ?? -1) - (a.rating ?? -1) || a.title.localeCompare(b.title));
         break;
-      }
+      case 'ratingAsc':
+        sorted.sort((a, b) => (a.rating ?? 6) - (b.rating ?? 6) || a.title.localeCompare(b.title));
+        break;
+      case 'yearDesc':
+        sorted.sort((a, b) => (b.year ?? -1) - (a.year ?? -1) || a.title.localeCompare(b.title));
+        break;
+      case 'yearAsc':
+        sorted.sort((a, b) => (a.year ?? 9999) - (b.year ?? 9999) || a.title.localeCompare(b.title));
+        break;
+      case 'ratedDesc':
+        sorted.sort(
+          (a, b) => (b.placed?.getTime() ?? -1) - (a.placed?.getTime() ?? -1) || a.title.localeCompare(b.title),
+        );
+        break;
+      case 'ratedAsc':
+        sorted.sort(
+          (a, b) => (a.placed?.getTime() ?? Number.MAX_SAFE_INTEGER) - (b.placed?.getTime() ?? Number.MAX_SAFE_INTEGER) ||
+            a.title.localeCompare(b.title),
+        );
+        break;
+      default:
+        sorted.sort((a, b) => a.title.localeCompare(b.title));
+        break;
     }
-    const target = current ?? sections[0];
-    if (target) {
-      this.activeLetter.set(target.id.replace('letter-', ''));
-    }
+    return sorted;
+  }
+
+  letterFor(row: VoteRow): string {
+    return firstLetter(row.title);
   }
 }
 

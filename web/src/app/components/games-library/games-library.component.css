@@ -1,10 +1,11 @@
 .library-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 180px;
+  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
 }
 
 .library-main {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -22,71 +23,105 @@
   color: var(--muted);
 }
 
+.filters-row {
+  position: relative;
+}
+
 .filters {
+  flex: 1;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: minmax(140px, 0.8fr) minmax(220px, 1.6fr) repeat(5, minmax(120px, 0.9fr));
   gap: 12px;
 }
 
 .filters label {
   display: grid;
   gap: 6px;
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
+}
+
+.filters .filter-search {
+  min-width: 140px;
+}
+
+.filters .filter-platform {
+  min-width: 220px;
+}
+
+@media (max-width: 1100px) {
+  .filters {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
 }
 
 .filters input,
 .filters select {
   border: 1px solid rgba(28, 28, 28, 0.12);
   border-radius: var(--radius-sm);
-  padding: 10px 12px;
+  padding: 8px 10px;
   background: white;
+  font-size: 13px;
 }
 
-
-.groups {
-  display: grid;
-  gap: 20px;
-}
-
-.group {
-  background: var(--bg-alt);
-  border-radius: var(--radius-md);
-  padding: 16px;
-}
-
-.group-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 10px;
-}
-
-.group-header h4 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.count {
-  color: var(--muted);
+.clear-button {
+  border: 1px solid rgba(15, 107, 95, 0.2);
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: #ffffff;
+  color: var(--accent-strong);
   font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+  white-space: nowrap;
 }
+
+.clear-button-floating {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+.clear-button:hover {
+  border-color: rgba(15, 107, 95, 0.5);
+  box-shadow: 0 6px 14px rgba(15, 107, 95, 0.12);
+  transform: translateY(-1px);
+}
+
 
 .game-list {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 .game-item {
-  background: white;
+  background: var(--bg-alt);
   padding: 12px 14px;
   border-radius: var(--radius-sm);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(15, 107, 95, 0.12);
+}
+
+.game-letter {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.game-details {
+  flex: 1;
+  min-width: 0;
 }
 
 .game-title {
@@ -108,79 +143,18 @@
   color: var(--accent-strong);
 }
 
-.letter-card {
-  height: fit-content;
-  position: sticky;
-  top: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.letter-card h4 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.letter-index {
+.empty-state {
   display: grid;
-  grid-template-columns: repeat(3, 32px);
-  justify-content: center;
-  gap: 10px;
-  background: var(--bg-alt);
-  padding: 10px 12px;
-  border-radius: var(--radius-md);
-}
-
-.letter-index button {
-  font-weight: 600;
-  color: var(--accent-strong);
-  text-decoration: none;
-  padding: 4px 0;
-  width: 32px;
-  border-radius: 999px;
-  background: #ffffff;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.12s ease, background 0.12s ease;
-}
-
-.letter-index button:hover {
-  background: var(--accent-soft);
-  transform: translateY(-1px);
-}
-
-.letter-index button.active {
-  background: var(--accent);
-  color: #ffffff;
-}
-
-.jump-top {
-  margin-top: 6px;
-  text-decoration: none;
-  font-weight: 600;
-  color: var(--accent);
-  display: inline-flex;
-  justify-content: center;
-  padding: 8px 12px;
+  gap: 12px;
+  padding: 20px;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(15, 107, 95, 0.25);
-  transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+  border: 1px dashed rgba(15, 107, 95, 0.25);
+  background: rgba(15, 107, 95, 0.06);
+  text-align: center;
+  color: var(--accent-strong);
 }
 
-.jump-top:hover {
-  border-color: rgba(15, 107, 95, 0.5);
-  box-shadow: 0 6px 12px rgba(15, 107, 95, 0.12);
-  transform: translateY(-1px);
-}
-
-@media (max-width: 900px) {
-  .library-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .letter-card {
-    position: static;
-  }
+.empty-state p {
+  margin: 0;
+  font-weight: 600;
 }

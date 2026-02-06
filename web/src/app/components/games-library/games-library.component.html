@@ -1,91 +1,97 @@
-<article class="library-layout" id="library-top">
+<article class="library-layout">
   <div class="card library-main">
+    <button type="button" class="clear-button clear-button-floating" (click)="clearFilters()">
+      {{ i18n.t('filters.clear') }}
+    </button>
     <div class="library-header">
       <h3>{{ i18n.t('library.title') }}</h3>
       <p class="muted">{{ i18n.t('library.subtitle') }}</p>
       <p class="summary">{{ i18n.t('library.summary', { filtered: filteredCount, total: totalCount }) }}</p>
     </div>
 
-    <div class="filters">
-      <label>
-        {{ i18n.t('filters.search') }}
-        <input type="search" [value]="query()" (input)="updateQuery($any($event.target).value)" />
-      </label>
-      <label>
-        {{ i18n.t('filters.platform') }}
-        <select [value]="platformFilter()" (change)="updatePlatform($any($event.target).value)">
-          @for (platform of platforms; track platform) {
-            <option [value]="platform" [selected]="platformFilter() === platform">
-              {{ platform === 'all' ? i18n.t('filters.allPlatforms') : platform }}
-            </option>
-          }
-        </select>
-      </label>
-      <label>
-        {{ i18n.t('filters.year') }}
-        <select [value]="yearFilter()" (change)="updateYear($any($event.target).value)">
-          @for (year of years; track year) {
-            <option [value]="year">{{ year === 'all' ? i18n.t('filters.allYears') : year }}</option>
-          }
-        </select>
-      </label>
-      <label>
-        {{ i18n.t('filters.ratedYear') }}
-        <select [value]="ratedYearFilter()" (change)="updateRatedYear($any($event.target).value)">
-          @for (year of ratedYears; track year) {
-            <option [value]="year">{{ year === 'all' ? i18n.t('filters.allRatedYears') : year }}</option>
-          }
-        </select>
-      </label>
-      <label>
-        {{ i18n.t('filters.rating') }}
-        <select [value]="ratingFilter()" (change)="updateRating($any($event.target).value)">
-          @for (option of ratingOptions; track option.value) {
-            <option [value]="option.value">{{ option.label }}</option>
-          }
-        </select>
-      </label>
+    <div class="filters-row">
+      <div class="filters">
+        <label class="filter filter-search">
+          {{ i18n.t('filters.search') }}
+          <input type="search" [value]="query()" (input)="updateQuery($any($event.target).value)" />
+        </label>
+        <label class="filter filter-platform">
+          {{ i18n.t('filters.platform') }}
+          <select [value]="platformFilter()" (change)="updatePlatform($any($event.target).value)">
+            @for (platform of platforms; track platform) {
+              <option [value]="platform" [selected]="platformFilter() === platform">
+                {{ platform === 'all' ? i18n.t('filters.allPlatforms') : platform }}
+              </option>
+            }
+          </select>
+        </label>
+        <label class="filter">
+          {{ i18n.t('filters.year') }}
+          <select [value]="yearFilter()" (change)="updateYear($any($event.target).value)">
+            @for (year of years; track year) {
+              <option [value]="year">{{ year === 'all' ? i18n.t('filters.allYears') : year }}</option>
+            }
+          </select>
+        </label>
+        <label class="filter">
+          {{ i18n.t('filters.ratedYear') }}
+          <select [value]="ratedYearFilter()" (change)="updateRatedYear($any($event.target).value)">
+            @for (year of ratedYears; track year) {
+              <option [value]="year">{{ year === 'all' ? i18n.t('filters.allRatedYears') : year }}</option>
+            }
+          </select>
+        </label>
+        <label class="filter">
+          {{ i18n.t('filters.rating') }}
+          <select [value]="ratingFilter()" (change)="updateRating($any($event.target).value)">
+            @for (option of ratingOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </label>
+        <label class="filter">
+          {{ i18n.t('filters.sort') }}
+          <select [value]="sortFilter()" (change)="updateSort($any($event.target).value)">
+            @for (option of sortOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </label>
+        <label class="filter">
+          {{ i18n.t('filters.letter') }}
+          <select [value]="letterFilter()" (change)="updateLetter($any($event.target).value)">
+            @for (letter of letters; track letter) {
+              <option [value]="letter">{{ letter === 'all' ? i18n.t('filters.allLetters') : letter }}</option>
+            }
+          </select>
+        </label>
+      </div>
     </div>
 
-    <div class="groups">
-      @for (group of groups; track trackByLetter($index, group)) {
-        <section class="group">
-          <div class="group-header" [attr.id]="'letter-' + group.letter">
-            <h4>{{ group.letter }}</h4>
-            <span class="count">{{ group.items.length }} {{ i18n.t('label.games') }}</span>
+    <div class="game-list">
+      @if (sortedRows.length === 0) {
+        <div class="empty-state">
+          <p>{{ i18n.t('library.empty') }}</p>
+        </div>
+      } @else {
+        @for (game of sortedRows; track trackByTitle($index, game)) {
+          <div class="game-item">
+            <span class="game-letter">{{ letterFor(game) }}</span>
+            <div class="game-details">
+              <p class="game-title">
+                @for (part of highlightParts(game.title); track part.text + part.match) {
+                  <span [class.highlight]="part.match">{{ part.text }}</span>
+                }
+              </p>
+              <p class="muted">
+                {{ game.platform ?? i18n.t('label.platformUnknown') }} ·
+                {{ game.year ?? i18n.t('label.yearUnknown') }}
+              </p>
+            </div>
+            <span class="rating">{{ game.rating?.toFixed(1) ?? '—' }}</span>
           </div>
-          <div class="game-list">
-            @for (game of group.items; track trackByTitle($index, game)) {
-              <div class="game-item">
-                <div>
-                  <p class="game-title">
-                    @for (part of highlightParts(game.title); track part.text + part.match) {
-                      <span [class.highlight]="part.match">{{ part.text }}</span>
-                    }
-                  </p>
-                  <p class="muted">
-                    {{ game.platform ?? i18n.t('label.platformUnknown') }} ·
-                    {{ game.year ?? i18n.t('label.yearUnknown') }}
-                  </p>
-                </div>
-                <span class="rating">{{ game.rating?.toFixed(1) ?? '—' }}</span>
-              </div>
-            }
-          </div>
-        </section>
+        }
       }
     </div>
   </div>
-
-  <aside class="card letter-card" [attr.aria-label]="i18n.t('library.indexLabel')">
-    <h4>{{ i18n.t('library.index') }}</h4>
-    <nav class="letter-index">
-      @for (letter of indexLetters; track letter) {
-        <button type="button" (click)="scrollTo(letter)" [class.active]="activeLetter() === letter">
-          {{ letter }}
-        </button>
-      }
-    </nav>
-    <a class="jump-top" href="#library-top">{{ i18n.t('library.jumpTop') }}</a>
-  </aside>
 </article>
