@@ -11,6 +11,8 @@ const PLATFORM_MAP: Record<string, { src: string; label: string }> = {
   PlayStation: { src: 'assets/platforms/playstation.svg', label: 'PS' },
   'PlayStation Vita': { src: 'assets/platforms/playstation.svg', label: 'PSV' },
   'Xbox Series X|S': { src: 'assets/platforms/xbox.svg', label: 'XS' },
+  'Xbox Series X/S': { src: 'assets/platforms/xbox.svg', label: 'XS' },
+  'Xbox Series X S': { src: 'assets/platforms/xbox.svg', label: 'XS' },
   'Xbox Series X': { src: 'assets/platforms/xbox.svg', label: 'XSX' },
   'Xbox Series S': { src: 'assets/platforms/xbox.svg', label: 'XSS' },
   'Xbox Series': { src: 'assets/platforms/xbox.svg', label: 'XS' },
