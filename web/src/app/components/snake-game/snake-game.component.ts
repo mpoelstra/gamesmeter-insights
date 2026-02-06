@@ -67,56 +67,7 @@ export class SnakeGameComponent implements AfterViewInit, OnDestroy {
   gridHeight = 32;
   cellSize = 18;
 
-  readonly obstacles = computed<Obstacle[]>(() => {
-    this.gridVersion();
-    const platforms = new Set<string>();
-    for (const row of this.rows()) {
-      if (row.platform) {
-        platforms.add(row.platform);
-      }
-    }
-    const names = [...platforms].sort();
-    const counts = new Map<string, number>();
-    for (const row of this.rows()) {
-      if (row.platform) {
-        counts.set(row.platform, (counts.get(row.platform) ?? 0) + 1);
-      }
-    }
-    const sortedByCount = [...counts.entries()].sort((a, b) => b[1] - a[1]);
-    const mostPlayed = sortedByCount[0]?.[0];
-    const minCount = sortedByCount[sortedByCount.length - 1]?.[1] ?? 0;
-    const maxCount = sortedByCount[0]?.[1] ?? 1;
-    const palette = ['#0f6b5f', '#d8a42a', '#c95a4f', '#315c7a', '#8a4d8f', '#5a7d4f', '#c77d2f', '#2e7a8a'];
-    const sizeRange = names.length <= 6 ? { min: 9, max: 15 } : { min: 3, max: 9 };
-    const used = new Set<string>();
-    return names
-      .map(name => ({
-        name,
-        count: counts.get(name) ?? 0,
-      }))
-      .sort((a, b) => b.count - a.count)
-      .map((entry, index) => {
-        let size = scaleObstacleSize(entry.count, minCount, maxCount, sizeRange.min, sizeRange.max);
-        if (entry.name === mostPlayed) {
-          size = Math.min(sizeRange.max, size + 1);
-        }
-        let cell = this.pickCellFromName(entry.name, used, size, 1);
-        if (!cell && size > 2) {
-          size -= 1;
-          cell = this.pickCellFromName(entry.name, used, size, 1);
-        }
-        if (!cell) {
-          cell = this.pickCellFromName(entry.name, used, Math.max(2, size), 0) ?? { x: 1, y: 1 };
-        }
-        reserveCells(cell, size, 1, used, this.gridWidth, this.gridHeight);
-        return {
-          name: entry.name,
-          cell,
-          size,
-          color: palette[index % palette.length] ?? '#0f6b5f',
-        };
-      });
-  });
+  readonly obstacles = signal<Obstacle[]>([]);
 
   ngAfterViewInit(): void {
     this.ctx = this.canvasRef.nativeElement.getContext('2d');
@@ -155,6 +106,7 @@ export class SnakeGameComponent implements AfterViewInit, OnDestroy {
     this.direction = { x: 1, y: 0 };
     this.nextDirection = { x: 1, y: 0 };
     this.pendingGrowth = 0;
+    this.obstacles.set(this.buildObstacles());
     const startX = Math.max(4, Math.floor(this.gridWidth / 3));
     const startY = Math.max(4, Math.floor(this.gridHeight / 2));
     this.snake = [
@@ -321,31 +273,68 @@ export class SnakeGameComponent implements AfterViewInit, OnDestroy {
   }
 
   private pickCellFromName(name: string, used: Set<string>, size: number, padding: number): Cell | null {
-    const hash = hashString(name);
-    for (let attempt = 0; attempt < 120; attempt += 1) {
-      const offset = hash + attempt * 13;
-      const cell = {
-        x: offset % Math.max(1, this.gridWidth - size),
-        y: Math.floor(offset / this.gridWidth) % Math.max(1, this.gridHeight - size),
-      };
-      let blocked = false;
-      for (let dx = -padding; dx < size + padding; dx += 1) {
-        for (let dy = -padding; dy < size + padding; dy += 1) {
-          const key = `${cell.x + dx},${cell.y + dy}`;
-          if (used.has(key)) {
-            blocked = true;
-            break;
-          }
-        }
-        if (blocked) {
-          break;
-        }
-      }
-      if (!blocked) {
-        return cell;
+    return pickRandomCell(used, size, padding, this.gridWidth, this.gridHeight);
+  }
+
+  private buildObstacles(): Obstacle[] {
+    const platforms = new Set<string>();
+    for (const row of this.rows()) {
+      if (row.platform) {
+        platforms.add(row.platform);
       }
     }
-    return null;
+    const names = [...platforms].sort();
+    const counts = new Map<string, number>();
+    for (const row of this.rows()) {
+      if (row.platform) {
+        counts.set(row.platform, (counts.get(row.platform) ?? 0) + 1);
+      }
+    }
+    const sortedByCount = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+    const mostPlayed = sortedByCount[0]?.[0];
+    const minCount = sortedByCount[sortedByCount.length - 1]?.[1] ?? 0;
+    const maxCount = sortedByCount[0]?.[1] ?? 1;
+    const palette = ['#0f6b5f', '#d8a42a', '#c95a4f', '#315c7a', '#8a4d8f', '#5a7d4f', '#c77d2f', '#2e7a8a'];
+    const sizeRange = names.length <= 6 ? { min: 9, max: 15 } : { min: 3, max: 9 };
+    const used = new Set<string>();
+    return names
+      .map(name => ({
+        name,
+        count: counts.get(name) ?? 0,
+      }))
+      .sort((a, b) => b.count - a.count)
+      .map((entry, index) => {
+        let size = scaleObstacleSize(entry.count, minCount, maxCount, sizeRange.min, sizeRange.max);
+        if (entry.name === mostPlayed) {
+          size = Math.min(sizeRange.max, size + 1);
+        }
+        let cell = this.pickCellFromName(entry.name, used, size, 1);
+        if (!cell && size > 2) {
+          size -= 1;
+          cell = this.pickCellFromName(entry.name, used, size, 1);
+        }
+        if (!cell) {
+          cell = this.pickCellFromName(entry.name, used, Math.max(2, size), 0) ?? { x: 1, y: 1 };
+        }
+        reserveCells(cell, size, 1, used, this.gridWidth, this.gridHeight);
+        return {
+          name: entry.name,
+          cell,
+          size,
+          color: palette[index % palette.length] ?? '#0f6b5f',
+        };
+      });
+  }
+
+  private anyObstacleOutOfBounds(): boolean {
+    return this.obstacles().some(obstacle => {
+      return (
+        obstacle.cell.x < 0 ||
+        obstacle.cell.y < 0 ||
+        obstacle.cell.x + obstacle.size > this.gridWidth ||
+        obstacle.cell.y + obstacle.size > this.gridHeight
+      );
+    });
   }
 
   private draw() {
@@ -497,6 +486,9 @@ export class SnakeGameComponent implements AfterViewInit, OnDestroy {
       this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
     this.gridVersion.update(value => value + 1);
+    if (this.anyObstacleOutOfBounds()) {
+      this.obstacles.set(this.buildObstacles());
+    }
     this.ensureSnakeClearOfObstacles();
     this.ensureFoodsInBounds();
     this.draw();
@@ -577,15 +569,6 @@ export class SnakeGameComponent implements AfterViewInit, OnDestroy {
       // ignore storage errors
     }
   }
-}
-
-function hashString(value: string): number {
-  let hash = 0;
-  for (let i = 0; i < value.length; i += 1) {
-    hash = (hash << 5) - hash + value.charCodeAt(i);
-    hash |= 0;
-  }
-  return Math.abs(hash);
 }
 
 function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
@@ -715,4 +698,38 @@ function reserveCells(
       }
     }
   }
+}
+
+function pickRandomCell(
+  used: Set<string>,
+  size: number,
+  padding: number,
+  gridWidth: number,
+  gridHeight: number,
+): Cell | null {
+  const maxX = Math.max(1, gridWidth - size);
+  const maxY = Math.max(1, gridHeight - size);
+  for (let attempt = 0; attempt < 200; attempt += 1) {
+    const cell = {
+      x: Math.floor(Math.random() * maxX),
+      y: Math.floor(Math.random() * maxY),
+    };
+    let blocked = false;
+    for (let dx = -padding; dx < size + padding; dx += 1) {
+      for (let dy = -padding; dy < size + padding; dy += 1) {
+        const key = `${cell.x + dx},${cell.y + dy}`;
+        if (used.has(key)) {
+          blocked = true;
+          break;
+        }
+      }
+      if (blocked) {
+        break;
+      }
+    }
+    if (!blocked) {
+      return cell;
+    }
+  }
+  return null;
 }
