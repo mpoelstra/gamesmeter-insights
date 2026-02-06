@@ -8,28 +8,21 @@
   </div>
   <div class="peaks-list">
     @for (platform of peaks(); track platform.name) {
-      <button class="peak" type="button" (click)="selectPlatform(platform.name)">
-        <div class="peak-head">
-          <div class="identity">
-            <img
-              class="platform-logo"
-              [src]="platformImage(platform.name).src"
-              [alt]="platform.name"
-              loading="lazy"
-              decoding="async"
-            />
-            <span class="name">{{ platform.name }}</span>
-          </div>
-          <span class="meta">{{ platform.count }} {{ i18n.t('label.games') }}</span>
-        </div>
-        <div class="bar">
-          <span [style.width.%]="barWidth(platform.average)"></span>
-        </div>
-        <div class="peak-foot">
-          <span class="avg">{{ i18n.t('label.avg') }} {{ platform.average.toFixed(2) }}</span>
-          <span class="rating">{{ platform.average.toFixed(1) }}</span>
-        </div>
-      </button>
+      <app-platform-peak-item
+        [name]="platform.name"
+        [count]="platform.count"
+        [average]="platform.average"
+        [labelGames]="i18n.t('label.games')"
+        [labelAvg]="i18n.t('label.avg')"
+        (select)="selectPlatform($event)"
+      >
+        <app-platform-logo
+          peak-logo
+          [src]="platformImage(platform.name).src"
+          [alt]="platform.name"
+          [size]="34"
+        />
+      </app-platform-peak-item>
     }
   </div>
 </article>

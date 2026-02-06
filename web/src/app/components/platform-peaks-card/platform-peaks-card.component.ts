@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { VoteRow } from '../../models';
 import { I18nService } from '../../i18n.service';
 import { getPlatformImage, PlatformImage } from '../../platform-images';
+import { PlatformLogoComponent } from '../../shared/platform-logo/platform-logo.component';
+import { PlatformPeakItemComponent } from '../../shared/platform-peak-item/platform-peak-item.component';
 
 interface PlatformPeak {
   name: string;
@@ -13,7 +15,7 @@ interface PlatformPeak {
 @Component({
   selector: 'app-platform-peaks-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PlatformLogoComponent, PlatformPeakItemComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './platform-peaks-card.component.html',
   styleUrls: ['./platform-peaks-card.component.css'],
@@ -46,10 +48,6 @@ export class PlatformPeaksCardComponent {
   });
 
   readonly totalPlatforms = computed(() => this.peaks().length);
-
-  barWidth(value: number): number {
-    return Math.max(0, Math.min(100, (value / 5) * 100));
-  }
 
   platformImage(platform: string): PlatformImage {
     return getPlatformImage(platform);

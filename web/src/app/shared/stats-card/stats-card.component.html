@@ -1,0 +1,14 @@
+<article class="card stats-card">
+  <div class="head">
+    <div class="titles">
+      <h3>{{ title() }}</h3>
+      @if (subtitle()) {
+        <p class="subtitle">{{ subtitle() }}</p>
+      }
+    </div>
+    <div class="actions">
+      <ng-content select="[card-actions]"></ng-content>
+    </div>
+  </div>
+  <ng-content></ng-content>
+</article>

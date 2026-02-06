@@ -76,12 +76,11 @@
       } @else {
         @for (game of sortedRows; track trackByTitle($index, game)) {
           <div class="game-item">
-            <img
+            <app-platform-logo
               class="game-platform-logo"
               [src]="platformImage(game.platform).src"
               [alt]="game.platform ?? i18n.t('label.platformUnknown')"
-              loading="lazy"
-              decoding="async"
+              [size]="36"
             />
             <div class="game-details">
               <p class="game-title">
@@ -99,22 +98,12 @@
               </p>
             }
             </div>
-            <div class="rating-stars" [attr.aria-label]="game.rating?.toFixed(1) ?? i18n.t('label.na')">
-              @for (state of getStarStates(game.rating); track $index) {
-                <span class="star" [class.full]="state === 'full'" [class.half]="state === 'half'">
-                  <svg class="star-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path
-                      class="star-base"
-                      d="M12 2.8l2.86 5.79 6.4.93-4.63 4.51 1.09 6.36L12 17.76l-5.72 3 1.09-6.36L2.74 9.52l6.4-.93L12 2.8z"
-                    />
-                    <path
-                      class="star-fill"
-                      d="M12 2.8l2.86 5.79 6.4.93-4.63 4.51 1.09 6.36L12 17.76l-5.72 3 1.09-6.36L2.74 9.52l6.4-.93L12 2.8z"
-                    />
-                  </svg>
-                </span>
-              }
-            </div>
+            <app-rating-stars
+              class="rating-stars"
+              [rating]="game.rating"
+              [size]="36"
+              [attr.aria-label]="game.rating?.toFixed(1) ?? i18n.t('label.na')"
+            />
           </div>
         }
       }

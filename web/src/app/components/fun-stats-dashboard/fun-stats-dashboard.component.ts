@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { VoteRow } from '../../models';
 import { I18nService } from '../../i18n.service';
 import { getPlatformImage, PlatformImage } from '../../platform-images';
+import { PlatformLogoComponent } from '../../shared/platform-logo/platform-logo.component';
+import { StatsCardComponent } from '../../shared/stats-card/stats-card.component';
 
 interface MonthStat {
   label: string;
@@ -17,7 +19,7 @@ interface RitualStat {
 @Component({
   selector: 'app-fun-stats-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PlatformLogoComponent, StatsCardComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './fun-stats-dashboard.component.html',
   styleUrls: ['./fun-stats-dashboard.component.css'],

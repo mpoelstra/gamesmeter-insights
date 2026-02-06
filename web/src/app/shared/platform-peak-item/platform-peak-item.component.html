@@ -1,0 +1,16 @@
+<button class="peak" type="button" (click)="onSelect()">
+  <div class="peak-head">
+    <div class="identity">
+      <ng-content select="[peak-logo]"></ng-content>
+      <span class="name">{{ name() }}</span>
+    </div>
+    <span class="meta">{{ count() }} {{ labelGames() }}</span>
+  </div>
+  <div class="bar">
+    <span [style.width.%]="barWidth"></span>
+  </div>
+  <div class="peak-foot">
+    <span class="avg">{{ labelAvg() }} {{ average().toFixed(2) }}</span>
+    <span class="rating">{{ average().toFixed(1) }}</span>
+  </div>
+</button>

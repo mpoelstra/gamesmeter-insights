@@ -1,0 +1,10 @@
+<div class="platform-stat" [class.low]="variant() === 'low'">
+  <p class="label">{{ label() }}</p>
+  <div class="value-row">
+    <ng-content select="[stat-logo]"></ng-content>
+    <p class="value">{{ value() }}</p>
+  </div>
+  @if (meta()) {
+    <p class="muted">{{ meta() }}</p>
+  }
+</div>

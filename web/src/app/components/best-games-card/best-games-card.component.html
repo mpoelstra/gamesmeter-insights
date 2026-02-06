@@ -12,28 +12,20 @@
   </div>
   <div class="games">
     @for (summary of filteredSummaries(); track summary.year) {
-      <div class="game-year">
-        <div class="game-year-header">
-          <span>{{ summary.year }}</span>
-          <span class="muted">{{ i18n.t('bestGames.topTitles', { count: summary.topGames.length }) }}</span>
-        </div>
-            <div class="game-list">
-            @for (game of summary.topGames; track game.title; let i = $index) {
-              <div class="game-item">
-                <div class="game-info">
-                  @if (rankLabel(i)) {
-                    <span class="rank" [attr.data-rank]="i + 1">{{ rankLabel(i) }}</span>
-                  }
-                  <div class="game-text">
-                    <p class="game-title">{{ game.title }}</p>
-                    <p class="muted">{{ game.platform ?? i18n.t('label.platformUnknown') }}</p>
-                  </div>
-                </div>
-                <span class="rating">{{ game.rating?.toFixed(1) }}</span>
-              </div>
-            }
-            </div>
-      </div>
+      <app-best-games-year
+        [year]="summary.year"
+        [meta]="i18n.t('bestGames.topTitles', { count: summary.topGames.length })"
+      >
+        @for (game of summary.topGames; track game.title; let i = $index) {
+          <app-best-game-item
+            [title]="game.title"
+            [platform]="game.platform ?? i18n.t('label.platformUnknown')"
+            [rating]="game.rating"
+            [rank]="i + 1"
+            [ratingLabel]="game.rating?.toFixed(1) ?? i18n.t('label.na')"
+          />
+        }
+      </app-best-games-year>
     }
   </div>
 </article>

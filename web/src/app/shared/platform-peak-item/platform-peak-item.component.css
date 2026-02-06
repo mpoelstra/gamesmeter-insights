@@ -1,0 +1,77 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.peak {
+  width: 100%;
+  background: var(--bg-alt);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: grid;
+  gap: 8px;
+  font: inherit;
+  border: 1px solid transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+}
+
+.peak:hover {
+  transform: translateY(-1px);
+  border-color: rgba(15, 107, 95, 0.2);
+  box-shadow: 0 6px 14px rgba(15, 107, 95, 0.12);
+}
+
+.peak-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.name {
+  font-weight: 700;
+  min-width: 0;
+}
+
+.meta {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.bar {
+  height: 8px;
+  background: #ffffff;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #0f6b5f 0%, #0b4f47 100%);
+}
+
+.peak-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.avg {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.rating {
+  font-weight: 700;
+  color: var(--accent-strong);
+}

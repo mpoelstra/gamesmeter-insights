@@ -6,48 +6,42 @@
     </div>
     @if (signature()) {
       <div class="signature-grid">
-        <div class="sig">
-          <p class="label">{{ i18n.t('platforms.mostPlayed') }}</p>
-          <div class="sig-line">
-            <img
-              class="platform-logo"
-              [src]="platformImage(signature()!.mostPlayed.name).src"
-              [alt]="signature()!.mostPlayed.name"
-              loading="lazy"
-              decoding="async"
-            />
-            <p class="value">{{ signature()!.mostPlayed.name }}</p>
-          </div>
-          <p class="muted">{{ signature()!.mostPlayed.count }} {{ i18n.t('label.games') }}</p>
-        </div>
-        <div class="sig">
-          <p class="label">{{ i18n.t('platforms.highestAvg') }}</p>
-          <div class="sig-line">
-            <img
-              class="platform-logo"
-              [src]="platformImage(signature()!.highestAvg.name).src"
-              [alt]="signature()!.highestAvg.name"
-              loading="lazy"
-              decoding="async"
-            />
-            <p class="value">{{ signature()!.highestAvg.name }}</p>
-          </div>
-          <p class="muted">{{ i18n.t('label.avg') }} {{ signature()!.highestAvg.average.toFixed(2) }}</p>
-        </div>
-        <div class="sig">
-          <p class="label">{{ i18n.t('platforms.mostConsistent') }}</p>
-          <div class="sig-line">
-            <img
-              class="platform-logo"
-              [src]="platformImage(signature()!.consistent?.name).src"
-              [alt]="signature()!.consistent?.name ?? i18n.t('label.platformUnknown')"
-              loading="lazy"
-              decoding="async"
-            />
-            <p class="value">{{ signature()!.consistent?.name ?? i18n.t('label.na') }}</p>
-          </div>
-          <p class="muted">{{ i18n.t('stats.stdDev') }} {{ signature()!.consistent?.stdDev.toFixed(2) ?? '—' }}</p>
-        </div>
+        <app-platform-stat-card
+          [label]="i18n.t('platforms.mostPlayed')"
+          [value]="signature()!.mostPlayed.name"
+          [meta]="signature()!.mostPlayed.count + ' ' + i18n.t('label.games')"
+        >
+          <app-platform-logo
+            stat-logo
+            [src]="platformImage(signature()!.mostPlayed.name).src"
+            [alt]="signature()!.mostPlayed.name"
+            [size]="26"
+          />
+        </app-platform-stat-card>
+        <app-platform-stat-card
+          [label]="i18n.t('platforms.highestAvg')"
+          [value]="signature()!.highestAvg.name"
+          [meta]="i18n.t('label.avg') + ' ' + signature()!.highestAvg.average.toFixed(2)"
+        >
+          <app-platform-logo
+            stat-logo
+            [src]="platformImage(signature()!.highestAvg.name).src"
+            [alt]="signature()!.highestAvg.name"
+            [size]="26"
+          />
+        </app-platform-stat-card>
+        <app-platform-stat-card
+          [label]="i18n.t('platforms.mostConsistent')"
+          [value]="signature()!.consistent?.name ?? i18n.t('label.na')"
+          [meta]="i18n.t('stats.stdDev') + ' ' + (signature()!.consistent?.stdDev.toFixed(2) ?? '—')"
+        >
+          <app-platform-logo
+            stat-logo
+            [src]="platformImage(signature()!.consistent?.name).src"
+            [alt]="signature()!.consistent?.name ?? i18n.t('label.platformUnknown')"
+            [size]="26"
+          />
+        </app-platform-stat-card>
       </div>
     }
   </div>
@@ -59,20 +53,18 @@
     </div>
     <div class="era-grid">
       @for (era of eraPeaks(); track era.era) {
-        <div class="era">
-          <p class="label">{{ era.era }}</p>
-          <div class="sig-line">
-            <img
-              class="platform-logo"
-              [src]="platformImage(era.platform).src"
-              [alt]="era.platform"
-              loading="lazy"
-              decoding="async"
-            />
-            <p class="value">{{ era.platform }}</p>
-          </div>
-          <p class="muted">{{ i18n.t('label.avg') }} {{ era.average.toFixed(2) }} · {{ era.count }} {{ i18n.t('label.games') }}</p>
-        </div>
+        <app-platform-stat-card
+          [label]="era.era"
+          [value]="era.platform"
+          [meta]="i18n.t('label.avg') + ' ' + era.average.toFixed(2) + ' · ' + era.count + ' ' + i18n.t('label.games')"
+        >
+          <app-platform-logo
+            stat-logo
+            [src]="platformImage(era.platform).src"
+            [alt]="era.platform"
+            [size]="26"
+          />
+        </app-platform-stat-card>
       }
     </div>
   </div>
@@ -84,20 +76,19 @@
     </div>
     <div class="era-grid">
       @for (era of eraLows(); track era.era) {
-        <div class="era low">
-          <p class="label">{{ era.era }}</p>
-          <div class="sig-line">
-            <img
-              class="platform-logo"
-              [src]="platformImage(era.platform).src"
-              [alt]="era.platform"
-              loading="lazy"
-              decoding="async"
-            />
-            <p class="value">{{ era.platform }}</p>
-          </div>
-          <p class="muted">{{ i18n.t('label.avg') }} {{ era.average.toFixed(2) }} · {{ era.count }} {{ i18n.t('label.games') }}</p>
-        </div>
+        <app-platform-stat-card
+          [label]="era.era"
+          [value]="era.platform"
+          [meta]="i18n.t('label.avg') + ' ' + era.average.toFixed(2) + ' · ' + era.count + ' ' + i18n.t('label.games')"
+          variant="low"
+        >
+          <app-platform-logo
+            stat-logo
+            [src]="platformImage(era.platform).src"
+            [alt]="era.platform"
+            [size]="26"
+          />
+        </app-platform-stat-card>
       }
     </div>
   </div>

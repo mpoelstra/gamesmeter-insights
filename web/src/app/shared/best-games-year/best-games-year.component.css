@@ -1,0 +1,17 @@
+.game-year {
+  background: var(--bg-alt);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.game-year-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.game-list {
+  display: grid;
+  gap: 10px;
+}

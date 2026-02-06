@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { VoteRow } from '../../models';
 import { I18nService } from '../../i18n.service';
 import { getPlatformImage, PlatformImage } from '../../platform-images';
+import { RatingStarsComponent } from '../../shared/rating-stars/rating-stars.component';
+import { PlatformLogoComponent } from '../../shared/platform-logo/platform-logo.component';
 
 @Component({
   selector: 'app-games-library',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RatingStarsComponent, PlatformLogoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './games-library.component.html',
   styleUrls: ['./games-library.component.css'],
@@ -97,21 +99,6 @@ export class GamesLibraryComponent {
 
   trackByTitle(index: number, row: VoteRow): string {
     return `${row.title}-${row.year ?? 'x'}-${row.platform ?? 'x'}`;
-  }
-
-  getStarStates(rating: number | null): Array<'full' | 'half' | 'empty'> {
-    const value = rating ?? 0;
-    const states: Array<'full' | 'half' | 'empty'> = [];
-    for (let i = 1; i <= 5; i += 1) {
-      if (value >= i) {
-        states.push('full');
-      } else if (value >= i - 0.5) {
-        states.push('half');
-      } else {
-        states.push('empty');
-      }
-    }
-    return states;
   }
 
   get totalCount(): number {

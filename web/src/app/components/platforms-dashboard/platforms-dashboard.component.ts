@@ -5,6 +5,8 @@ import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { VoteRow } from '../../models';
 import { I18nService } from '../../i18n.service';
 import { getPlatformImage, PlatformImage } from '../../platform-images';
+import { PlatformLogoComponent } from '../../shared/platform-logo/platform-logo.component';
+import { PlatformStatCardComponent } from '../../shared/platform-stat-card/platform-stat-card.component';
 
 interface PlatformStats {
   name: string;
@@ -31,7 +33,7 @@ interface EraPeak {
 @Component({
   selector: 'app-platforms-dashboard',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective],
+  imports: [CommonModule, BaseChartDirective, PlatformLogoComponent, PlatformStatCardComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './platforms-dashboard.component.html',
   styleUrls: ['./platforms-dashboard.component.css'],

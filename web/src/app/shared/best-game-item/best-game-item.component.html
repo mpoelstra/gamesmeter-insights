@@ -1,0 +1,17 @@
+<div class="game-item">
+  <div class="game-info">
+    @if (rank() !== null && rank()! > 0) {
+      <span class="rank" [attr.data-rank]="rank()">{{ rank() }}</span>
+    }
+    <div class="game-text">
+      <p class="game-title">{{ title() }}</p>
+      <p class="muted">{{ platform() }}</p>
+    </div>
+  </div>
+  <app-rating-stars
+    class="rating-stars"
+    [rating]="rating()"
+    [size]="28"
+    [attr.aria-label]="ratingLabel()"
+  />
+</div>

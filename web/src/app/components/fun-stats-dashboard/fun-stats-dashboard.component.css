@@ -37,17 +37,8 @@
   gap: 10px;
 }
 
-.platform-logo {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  flex-shrink: 0;
-  background: #ffffff;
-  border: 1px solid rgba(15, 107, 95, 0.12);
-}
-
-.card {
-  height: 300px;
+app-stats-card.card-300 {
+  --card-height: 300px;
 }
 
 .rituals {
@@ -67,19 +58,6 @@
 .rituals.rituals-year {
   grid-template-columns: repeat(auto-fit, minmax(24px, 1fr));
   row-gap: 10px;
-}
-
-.ritual-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: nowrap;
-  margin-bottom: 6px;
-}
-
-.ritual-head h3 {
-  margin: 0;
 }
 
 .ritual-controls {

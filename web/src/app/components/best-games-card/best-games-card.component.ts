@@ -2,11 +2,13 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, signal } f
 import { CommonModule } from '@angular/common';
 import { YearSummary } from '../../models';
 import { I18nService } from '../../i18n.service';
+import { BestGameItemComponent } from '../../shared/best-game-item/best-game-item.component';
+import { BestGamesYearComponent } from '../../shared/best-games-year/best-games-year.component';
 
 @Component({
   selector: 'app-best-games-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, BestGameItemComponent, BestGamesYearComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './best-games-card.component.html',
   styleUrls: ['./best-games-card.component.css'],

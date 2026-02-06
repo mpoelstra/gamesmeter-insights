@@ -1,0 +1,35 @@
+.platform-stat {
+  background: var(--bg-alt);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  height: 100%;
+}
+
+.platform-stat.low {
+  border: 1px dashed rgba(201, 90, 79, 0.35);
+}
+
+.label {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 11px;
+  color: var(--muted);
+  margin: 0 0 6px;
+}
+
+.value-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.value {
+  margin: 0;
+  font-weight: 700;
+}
+
+.muted {
+  margin: 0;
+  color: var(--muted);
+}
