@@ -41,30 +41,16 @@
 
   @if (stats().total > 0) {
     <section class="tabs">
-      <button type="button" (click)="setTab('overview')" [class.active]="activeTab() === 'overview'">
+      <a routerLink="/overview" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
         {{ i18n.t('tabs.overview') }}
-      </button>
-      <button type="button" (click)="setTab('timeline')" [class.active]="activeTab() === 'timeline'">
-        {{ i18n.t('tabs.timeline') }}
-      </button>
-      <button type="button" (click)="setTab('platforms')" [class.active]="activeTab() === 'platforms'">
-        {{ i18n.t('tabs.platforms') }}
-      </button>
-      <button type="button" (click)="setTab('games')" [class.active]="activeTab() === 'games'">
-        {{ i18n.t('tabs.games') }}
-      </button>
-      <button type="button" (click)="setTab('fun')" [class.active]="activeTab() === 'fun'">
-        {{ i18n.t('tabs.fun') }}
-      </button>
-      <button type="button" (click)="setTab('gems')" [class.active]="activeTab() === 'gems'">
-        {{ i18n.t('tabs.gems') }}
-      </button>
-      <button type="button" (click)="setTab('snake')" [class.active]="activeTab() === 'snake'">
-        {{ i18n.t('tabs.snake') }}
-      </button>
-      <button type="button" (click)="setTab('library')" [class.active]="activeTab() === 'library'">
-        {{ i18n.t('tabs.library') }}
-      </button>
+      </a>
+      <a routerLink="/timeline" routerLinkActive="active">{{ i18n.t('tabs.timeline') }}</a>
+      <a routerLink="/platforms" routerLinkActive="active">{{ i18n.t('tabs.platforms') }}</a>
+      <a routerLink="/games" routerLinkActive="active">{{ i18n.t('tabs.games') }}</a>
+      <a routerLink="/fun" routerLinkActive="active">{{ i18n.t('tabs.fun') }}</a>
+      <a routerLink="/gems" routerLinkActive="active">{{ i18n.t('tabs.gems') }}</a>
+      <a routerLink="/snake" routerLinkActive="active">{{ i18n.t('tabs.snake') }}</a>
+      <a routerLink="/library" routerLinkActive="active">{{ i18n.t('tabs.library') }}</a>
     </section>
   }
 
@@ -74,74 +60,8 @@
       <p>{{ i18n.t('empty.body') }}</p>
     </section>
   } @else {
-    @if (activeTab() === 'overview') {
-      <section class="panel">
-        <div class="grid">
-          <app-gamer-profile-card [profile]="profile()" />
-          <app-general-stats-card [stats]="stats()" [trend]="trend()" />
-        </div>
-
-        <div class="full-width">
-          <app-platform-peaks-card [rows]="allRows()" (platformSelected)="openLibraryForPlatform($event)" />
-        </div>
-      </section>
-    }
-
-    @if (activeTab() === 'timeline') {
-      <section class="panel">
-        <div class="grid">
-          <app-highest-rated-years-card [years]="highestRatedYears()" />
-          <app-year-averages-card [summaries]="yearSummaries()" />
-        </div>
-        <div class="grid">
-          <app-trend-summary-card [trend]="trend()" />
-          <app-trend-timeline-card [summaries]="yearSummaries()" />
-        </div>
-        <div class="full-width">
-          <app-ratings-distribution-card [stats]="stats()" />
-        </div>
-      </section>
-    }
-
-    @if (activeTab() === 'platforms') {
-      <section class="panel">
-        <app-platforms-dashboard [rows]="allRows()" />
-      </section>
-    }
-
-    @if (activeTab() === 'fun') {
-      <section class="panel">
-        <app-fun-stats-dashboard [rows]="allRows()" />
-      </section>
-    }
-
-    @if (activeTab() === 'games') {
-      <section class="panel">
-        <app-best-games-card [summaries]="yearSummaries()" />
-      </section>
-    }
-
-
-    @if (activeTab() === 'gems') {
-      <section class="panel">
-        <app-hidden-gems-card />
-      </section>
-    }
-
-    @if (activeTab() === 'snake') {
-      <section class="panel">
-        <app-snake-game [rows]="allRows()" />
-      </section>
-    }
-
-    @if (activeTab() === 'library') {
-      <section class="panel">
-        <app-games-library
-          [rows]="allRows()"
-          [initialPlatform]="libraryPlatform()"
-          (initialPlatformConsumed)="clearLibraryPlatform()"
-        />
-      </section>
-    }
+    <div class="content">
+      <router-outlet />
+    </div>
   }
 </div>

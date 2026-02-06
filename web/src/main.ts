@@ -1,7 +1,9 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { NgChartsConfiguration, provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { AppComponent } from './app/app.component';
+import { routes } from './app/app.routes';
 
 const chartTheme: NgChartsConfiguration = {
   defaults: {
@@ -55,5 +57,9 @@ const chartTheme: NgChartsConfiguration = {
 };
 
 bootstrapApplication(AppComponent, {
-  providers: [provideAnimations(), provideCharts(withDefaultRegisterables(), chartTheme)],
+  providers: [
+    provideAnimations(),
+    provideCharts(withDefaultRegisterables(), chartTheme),
+    provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
+  ],
 }).catch(error => console.error(error));

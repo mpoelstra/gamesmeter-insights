@@ -149,7 +149,7 @@ button.ghost:hover {
   flex-wrap: wrap;
 }
 
-.tabs button {
+.tabs a {
   border: none;
   background: #ffffff80;
   padding: 10px 18px;
@@ -158,17 +158,23 @@ button.ghost:hover {
   font-weight: 600;
   color: var(--muted);
   transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+  text-decoration: none;
+  display: inline-flex;
 }
 
-.tabs button.active {
+.tabs a.active {
   background: var(--accent);
   color: white;
 }
 
-.tabs button:not(.active):hover {
+.tabs a:not(.active):hover {
   transform: translateY(-1px);
   background: var(--accent-soft);
   color: var(--accent-strong);
+}
+
+.content {
+  margin-top: -8px;
 }
 
 .panel {
@@ -179,6 +185,14 @@ button.ghost:hover {
 
 .full-width {
   width: 100%;
+}
+
+router-outlet {
+  display: block;
+}
+
+router-outlet + * {
+  display: block;
 }
 
 .grid {
