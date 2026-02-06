@@ -1,0 +1,42 @@
+<button
+  type="button"
+  class="cover-button"
+  [class.clickable]="clickable()"
+  (click)="showPreview()"
+>
+  <img
+    class="cover"
+    [style.width.px]="width()"
+    [style.height.px]="height()"
+    [src]="src() || fallback"
+    [alt]="alt()"
+    loading="lazy"
+    decoding="async"
+    (error)="onError($event)"
+  />
+</button>
+
+@if (open()) {
+  <div class="cover-dialog" (click)="closePreview()">
+    <div class="cover-dialog-inner" (click)="$event.stopPropagation()">
+      <button type="button" class="close" (click)="closePreview()">×</button>
+      <img class="cover-full" [src]="src() || fallback" [alt]="alt()" />
+      @if (title() || platform() || rating() || ratedOn()) {
+        <div class="cover-meta">
+          @if (title()) {
+            <p class="cover-title">{{ title() }}</p>
+          }
+          @if (platform() || rating() || ratedOn()) {
+            <p class="cover-sub">
+              @if (platform()) { {{ platform() }} }
+              @if (platform() && rating()) { · }
+              @if (rating()) { {{ rating()!.toFixed(1) }} }
+              @if ((platform() || rating()) && ratedOn()) { · }
+              @if (ratedOn()) { {{ ratedOn() }} }
+            </p>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}

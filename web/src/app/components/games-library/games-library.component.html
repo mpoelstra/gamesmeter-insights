@@ -82,6 +82,16 @@
               [alt]="game.platform ?? i18n.t('label.platformUnknown')"
               [size]="36"
             />
+            <app-cover-image
+              [src]="coverUrlFor(game.id)"
+              [alt]="game.title"
+              [width]="44"
+              [height]="62"
+              [title]="game.title"
+              [platform]="game.platform ?? i18n.t('label.platformUnknown')"
+              [rating]="game.rating"
+              [ratedOn]="game.placed ? i18n.formatDate(game.placed) : null"
+            />
             <div class="game-details">
               <p class="game-title">
                 @for (part of highlightParts(game.title); track part.text + part.match) {

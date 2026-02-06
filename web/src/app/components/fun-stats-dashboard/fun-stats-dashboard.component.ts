@@ -5,6 +5,8 @@ import { I18nService } from '../../i18n.service';
 import { getPlatformImage, PlatformImage } from '../../platform-images';
 import { PlatformLogoComponent } from '../../shared/platform-logo/platform-logo.component';
 import { StatsCardComponent } from '../../shared/stats-card/stats-card.component';
+import { CoverImageComponent } from '../../shared/cover-image/cover-image.component';
+import { COVER_PROXY_BASE } from '../../app.config';
 
 interface MonthStat {
   label: string;
@@ -19,7 +21,7 @@ interface RitualStat {
 @Component({
   selector: 'app-fun-stats-dashboard',
   standalone: true,
-  imports: [CommonModule, PlatformLogoComponent, StatsCardComponent],
+  imports: [CommonModule, PlatformLogoComponent, StatsCardComponent, CoverImageComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './fun-stats-dashboard.component.html',
   styleUrls: ['./fun-stats-dashboard.component.css'],
@@ -27,6 +29,7 @@ interface RitualStat {
 export class FunStatsDashboardComponent {
   readonly rows = input.required<VoteRow[]>();
   readonly i18n = inject(I18nService);
+  private readonly coverProxyBase = inject(COVER_PROXY_BASE);
 
   readonly ratedRows = computed(() => this.rows().filter(row => row.rating !== null));
   readonly ritualView = signal<'month' | 'weekday' | 'year'>('month');
@@ -350,7 +353,7 @@ export class FunStatsDashboardComponent {
         best = row;
       }
     }
-    return { title: best.title, length: (best.title ?? '').length };
+    return { title: best.title, length: (best.title ?? '').length, row: best };
   });
 
   readonly mostPolarizingYear = computed(() => {
@@ -380,6 +383,23 @@ export class FunStatsDashboardComponent {
     const max = Math.max(...this.ritualStats().map(stat => stat.count), 1);
     return (count / max) * 100;
   }
+
+  coverUrlFor(id: number | null): string | null {
+    if (!id) {
+      return null;
+    }
+    return `${this.coverProxyBase}/${id}`;
+  }
+
+  readonly franchiseCovers = computed(() => {
+    const franchise = this.mostReplayedFranchise();
+    if (!franchise) {
+      return [];
+    }
+    const target = franchise.name.toLowerCase();
+    const matches = this.rows().filter(row => baseFranchise(row.title ?? '').toLowerCase() === target);
+    return matches.slice(0, 16);
+  });
 }
 
 function mean(values: number[]): number {

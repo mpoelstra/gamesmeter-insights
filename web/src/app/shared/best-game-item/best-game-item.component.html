@@ -3,6 +3,16 @@
     @if (rank() !== null && rank()! > 0) {
       <span class="rank" [attr.data-rank]="rank()">{{ rank() }}</span>
     }
+    <app-cover-image
+      [src]="coverUrl()"
+      [alt]="title()"
+      [width]="44"
+      [height]="62"
+      [title]="title()"
+      [platform]="platform()"
+      [rating]="rating()"
+      [ratedOn]="ratedOn()"
+    />
     <div class="game-text">
       <p class="game-title">{{ title() }}</p>
       <p class="muted">{{ platform() }}</p>

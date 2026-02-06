@@ -23,6 +23,8 @@
             [rating]="game.rating"
             [rank]="i + 1"
             [ratingLabel]="game.rating?.toFixed(1) ?? i18n.t('label.na')"
+            [coverUrl]="coverUrlFor(game.id)"
+            [ratedOn]="game.placed ? i18n.formatDate(game.placed) : null"
           />
         }
       </app-best-games-year>

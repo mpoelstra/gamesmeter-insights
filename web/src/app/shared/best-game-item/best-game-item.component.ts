@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RatingStarsComponent } from '../rating-stars/rating-stars.component';
+import { CoverImageComponent } from '../cover-image/cover-image.component';
 
 @Component({
   selector: 'app-best-game-item',
   standalone: true,
-  imports: [CommonModule, RatingStarsComponent],
+  imports: [CommonModule, RatingStarsComponent, CoverImageComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './best-game-item.component.html',
   styleUrls: ['./best-game-item.component.css'],
@@ -16,4 +17,6 @@ export class BestGameItemComponent {
   readonly rating = input<number | null>(null);
   readonly rank = input<number | null>(null);
   readonly ratingLabel = input<string>('');
+  readonly coverUrl = input<string | null>(null);
+  readonly ratedOn = input<string | null>(null);
 }

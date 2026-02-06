@@ -1,0 +1,74 @@
+.cover {
+  border-radius: 10px;
+  object-fit: cover;
+  background: #f0f4f3;
+  border: 1px solid rgba(15, 107, 95, 0.15);
+  flex-shrink: 0;
+}
+
+.cover-button {
+  border: none;
+  padding: 0;
+  background: transparent;
+  display: inline-flex;
+}
+
+.cover-button.clickable {
+  cursor: pointer;
+}
+
+.cover-dialog {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 15, 14, 0.6);
+  display: grid;
+  place-items: center;
+  z-index: 50;
+}
+
+.cover-dialog-inner {
+  position: relative;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 18px 45px rgba(18, 27, 26, 0.25);
+  max-width: min(90vw, 520px);
+}
+
+.cover-full {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  display: block;
+}
+
+.cover-meta {
+  margin-top: 12px;
+}
+
+.cover-title {
+  margin: 0 0 4px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.cover-sub {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border: none;
+  background: rgba(15, 107, 95, 0.1);
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--accent-strong);
+}

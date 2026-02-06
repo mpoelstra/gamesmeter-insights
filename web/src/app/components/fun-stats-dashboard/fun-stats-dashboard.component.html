@@ -2,10 +2,38 @@
   <div class="grid four">
     <app-stats-card class="card-300" [title]="i18n.t('fun.firstLast')">
       @if (firstLast()) {
-        <p class="value">{{ firstLast()!.first.title }}</p>
-        <p class="muted">{{ i18n.t('fun.firstRated', { date: i18n.formatDate(firstLast()!.first.placed) }) }}</p>
-        <p class="value">{{ firstLast()!.last.title }}</p>
-        <p class="muted">{{ i18n.t('fun.latestRated', { date: i18n.formatDate(firstLast()!.last.placed) }) }}</p>
+        <div class="cover-row">
+          <app-cover-image
+            [src]="coverUrlFor(firstLast()!.first.id)"
+            [alt]="firstLast()!.first.title"
+            [width]="40"
+            [height]="56"
+            [title]="firstLast()!.first.title"
+            [platform]="firstLast()!.first.platform ?? i18n.t('label.platformUnknown')"
+            [rating]="firstLast()!.first.rating"
+            [ratedOn]="firstLast()!.first.placed ? i18n.formatDate(firstLast()!.first.placed) : null"
+          />
+          <div>
+            <p class="value">{{ firstLast()!.first.title }}</p>
+            <p class="muted">{{ i18n.t('fun.firstRated', { date: i18n.formatDate(firstLast()!.first.placed) }) }}</p>
+          </div>
+        </div>
+        <div class="cover-row">
+          <app-cover-image
+            [src]="coverUrlFor(firstLast()!.last.id)"
+            [alt]="firstLast()!.last.title"
+            [width]="40"
+            [height]="56"
+            [title]="firstLast()!.last.title"
+            [platform]="firstLast()!.last.platform ?? i18n.t('label.platformUnknown')"
+            [rating]="firstLast()!.last.rating"
+            [ratedOn]="firstLast()!.last.placed ? i18n.formatDate(firstLast()!.last.placed) : null"
+          />
+          <div>
+            <p class="value">{{ firstLast()!.last.title }}</p>
+            <p class="muted">{{ i18n.t('fun.latestRated', { date: i18n.formatDate(firstLast()!.last.placed) }) }}</p>
+          </div>
+        </div>
       } @else {
         <p class="muted">{{ i18n.t('fun.noDates') }}</p>
       }
@@ -132,6 +160,20 @@
       @if (mostReplayedFranchise()) {
         <p class="value">{{ mostReplayedFranchise()!.name }}</p>
         <p class="muted">{{ i18n.t('fun.replayedCount', { count: mostReplayedFranchise()!.count }) }}</p>
+        <div class="cover-grid">
+          @for (game of franchiseCovers(); track game.id) {
+            <app-cover-image
+              [src]="coverUrlFor(game.id)"
+              [alt]="game.title"
+              [width]="32"
+              [height]="44"
+              [title]="game.title"
+              [platform]="game.platform ?? i18n.t('label.platformUnknown')"
+              [rating]="game.rating"
+              [ratedOn]="game.placed ? i18n.formatDate(game.placed) : null"
+            />
+          }
+        </div>
       } @else {
         <p class="muted">{{ i18n.t('fun.noFranchise') }}</p>
       }
@@ -162,8 +204,22 @@
 
     <app-stats-card class="card-300" [title]="i18n.t('fun.epicTitle')">
       @if (longestTitle()) {
-        <p class="value">{{ longestTitle()!.title }}</p>
-        <p class="muted">{{ i18n.t('fun.titleLength', { count: longestTitle()!.length }) }}</p>
+        <div class="cover-row">
+          <app-cover-image
+            [src]="coverUrlFor(longestTitle()!.row.id)"
+            [alt]="longestTitle()!.title"
+            [width]="40"
+            [height]="56"
+            [title]="longestTitle()!.title"
+            [platform]="longestTitle()!.row.platform ?? i18n.t('label.platformUnknown')"
+            [rating]="longestTitle()!.row.rating"
+            [ratedOn]="longestTitle()!.row.placed ? i18n.formatDate(longestTitle()!.row.placed) : null"
+          />
+          <div>
+            <p class="value">{{ longestTitle()!.title }}</p>
+            <p class="muted">{{ i18n.t('fun.titleLength', { count: longestTitle()!.length }) }}</p>
+          </div>
+        </div>
       } @else {
         <p class="muted">{{ i18n.t('fun.noTitles') }}</p>
       }

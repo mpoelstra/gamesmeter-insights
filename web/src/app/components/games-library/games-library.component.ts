@@ -5,11 +5,13 @@ import { I18nService } from '../../i18n.service';
 import { getPlatformImage, PlatformImage } from '../../platform-images';
 import { RatingStarsComponent } from '../../shared/rating-stars/rating-stars.component';
 import { PlatformLogoComponent } from '../../shared/platform-logo/platform-logo.component';
+import { CoverImageComponent } from '../../shared/cover-image/cover-image.component';
+import { COVER_PROXY_BASE } from '../../app.config';
 
 @Component({
   selector: 'app-games-library',
   standalone: true,
-  imports: [CommonModule, RatingStarsComponent, PlatformLogoComponent],
+  imports: [CommonModule, RatingStarsComponent, PlatformLogoComponent, CoverImageComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './games-library.component.html',
   styleUrls: ['./games-library.component.css'],
@@ -251,6 +253,15 @@ export class GamesLibraryComponent {
   platformImage(platform: string | null | undefined): PlatformImage {
     return getPlatformImage(platform ?? this.i18n.t('label.platformUnknown'));
   }
+
+  coverUrlFor(id: number | null): string | null {
+    if (!id) {
+      return null;
+    }
+    return `${this.coverProxyBase}/${id}`;
+  }
+
+  private readonly coverProxyBase = inject(COVER_PROXY_BASE);
 }
 
 function firstLetter(title: string): string {

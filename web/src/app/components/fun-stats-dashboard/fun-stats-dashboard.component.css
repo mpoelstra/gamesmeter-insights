@@ -37,6 +37,32 @@
   gap: 10px;
 }
 
+.cover-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.cover-row .value {
+  margin-bottom: 4px;
+}
+
+.cover-row .muted {
+  margin: 0;
+}
+
+.cover-grid {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.cover-grid app-cover-image {
+  justify-self: center;
+}
+
 app-stats-card.card-300 {
   --card-height: 300px;
 }
@@ -147,5 +173,9 @@ app-stats-card.card-300 {
 
   .mini-bars {
     height: 100px;
+  }
+
+  .cover-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
