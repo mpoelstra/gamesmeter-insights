@@ -37,7 +37,7 @@ export class HiddenGemsCardComponent {
       if (this.status() !== 'ready') {
         return;
       }
-      const key = `${this.insights.fileName() ?? 'file'}:${this.rows().length}`;
+      const key = datasetKey(this.insights.fileName(), this.rows());
       if (this.lastRunKey() === key) {
         return;
       }
@@ -79,7 +79,7 @@ export class HiddenGemsCardComponent {
           writeCache(cache);
           await wait(320);
         }
-        if (match?.aggregated_rating) {
+        if (typeof match?.aggregated_rating === 'number' && Number.isFinite(match.aggregated_rating)) {
           const publicScore = match.aggregated_rating / 20;
           results.push({
             row,
@@ -100,7 +100,7 @@ export class HiddenGemsCardComponent {
         .filter(item => item.delta <= -0.6)
         .sort((a, b) => a.delta - b.delta)
         .slice(0, 6);
-      const key = `${this.insights.fileName() ?? 'file'}:${this.rows().length}`;
+      const key = datasetKey(this.insights.fileName(), this.rows());
       this.hiddenGems.set(gems);
       this.hotTakes.set(hotTakes);
       this.writeResultsCache({
@@ -237,6 +237,19 @@ function writeCache(cache: CacheMap) {
 
 function wait(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function datasetKey(fileName: string | null, rows: VoteRow[]): string {
+  const base = fileName ?? 'file';
+  let hash = 0;
+  for (const row of rows) {
+    const placed = row.placed ? row.placed.toISOString() : '';
+    const chunk = `${row.id ?? ''}|${row.title}|${row.year ?? ''}|${row.platform ?? ''}|${row.rating ?? ''}|${placed}`;
+    for (let i = 0; i < chunk.length; i += 1) {
+      hash = (hash * 31 + chunk.charCodeAt(i)) >>> 0;
+    }
+  }
+  return `${base}:${rows.length}:${hash.toString(16)}`;
 }
 
 function pickRandom<T>(items: T[], count: number): T[] {

@@ -573,7 +573,7 @@ export class SnakeGameComponent implements AfterViewInit, OnDestroy {
 }
 
 function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
-  const words = text.split(/\\s+/).filter(Boolean);
+  const words = text.split(/\s+/).filter(Boolean);
   if (words.length === 0) {
     return [''];
   }
@@ -708,8 +708,8 @@ function pickRandomCell(
   gridWidth: number,
   gridHeight: number,
 ): Cell | null {
-  const maxX = Math.max(1, gridWidth - size);
-  const maxY = Math.max(1, gridHeight - size);
+  const maxX = Math.max(1, gridWidth - size + 1);
+  const maxY = Math.max(1, gridHeight - size + 1);
   for (let attempt = 0; attempt < 200; attempt += 1) {
     const cell = {
       x: Math.floor(Math.random() * maxX),
