@@ -30,6 +30,9 @@ export class GamesLibraryComponent {
   readonly letterFilter = signal<string>('all');
   readonly viewMode = signal<'list' | 'tiles'>('list');
   private readonly appliedInitial = signal(false);
+  private get ratedRows(): VoteRow[] {
+    return this.rows().filter((row): row is VoteRow & { rating: number } => row.rating !== null);
+  }
 
   get filteredRows(): VoteRow[] {
     const query = this.query().trim().toLowerCase();
@@ -40,7 +43,7 @@ export class GamesLibraryComponent {
     const letterFilter = this.letterFilter();
     const exactRating = ratingFilter === 'all' ? null : Number(ratingFilter);
 
-    return this.rows().filter(row => {
+    return this.ratedRows.filter(row => {
       const matchesQuery = query.length === 0 || row.title.toLowerCase().includes(query);
       const matchesPlatform = platform === 'all' || row.platform === platform;
       const matchesYear = yearFilter === 'all' || String(row.year ?? '') === yearFilter;
@@ -56,7 +59,7 @@ export class GamesLibraryComponent {
 
   get platforms(): string[] {
     const platformSet = new Set<string>();
-    for (const row of this.rows()) {
+    for (const row of this.ratedRows) {
       if (row.platform) {
         platformSet.add(row.platform);
       }
@@ -66,7 +69,7 @@ export class GamesLibraryComponent {
 
   get years(): string[] {
     const yearSet = new Set<number>();
-    for (const row of this.rows()) {
+    for (const row of this.ratedRows) {
       if (row.year) {
         yearSet.add(row.year);
       }
@@ -77,7 +80,7 @@ export class GamesLibraryComponent {
 
   get ratedYears(): string[] {
     const yearSet = new Set<number>();
-    for (const row of this.rows()) {
+    for (const row of this.ratedRows) {
       if (row.placed) {
         yearSet.add(row.placed.getFullYear());
       }
@@ -88,7 +91,7 @@ export class GamesLibraryComponent {
 
   get letters(): string[] {
     const letterSet = new Set<string>();
-    for (const row of this.rows()) {
+    for (const row of this.ratedRows) {
       letterSet.add(firstLetter(row.title));
     }
     const sorted = [...letterSet].sort((a, b) => a.localeCompare(b));
@@ -105,7 +108,7 @@ export class GamesLibraryComponent {
   }
 
   get totalCount(): number {
-    return this.rows().length;
+    return this.ratedRows.length;
   }
 
   get filteredCount(): number {

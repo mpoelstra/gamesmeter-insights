@@ -10,6 +10,7 @@ export type DataStatus = 'empty' | 'ready' | 'error';
   providedIn: 'root',
 })
 export class InsightsService {
+  private readonly storagePrefix = 'gamesmeter:';
   private readonly storageKey = 'gamesmeter:lastCsv';
   private readonly rows = signal<VoteRow[]>([]);
   private readonly i18n = inject(I18nService);
@@ -56,6 +57,24 @@ export class InsightsService {
       localStorage.removeItem(this.storageKey);
     } catch (error) {
       console.warn('Unable to clear cached CSV', error);
+    }
+  }
+
+  clearAllLocalData() {
+    this.reset();
+    try {
+      const keys: string[] = [];
+      for (let index = 0; index < localStorage.length; index += 1) {
+        const key = localStorage.key(index);
+        if (key?.startsWith(this.storagePrefix)) {
+          keys.push(key);
+        }
+      }
+      for (const key of keys) {
+        localStorage.removeItem(key);
+      }
+    } catch (error) {
+      console.warn('Unable to clear local data', error);
     }
   }
 

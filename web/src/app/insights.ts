@@ -41,12 +41,13 @@ export function buildYearSummaries(rows: VoteRow[]): YearSummary[] {
 }
 
 export function buildGeneralStats(rows: VoteRow[], unknownLabel = 'Unknown'): GeneralStats {
-  const ratings = rows.map(row => row.rating).filter((value): value is number => value !== null);
-  const years = rows.map(row => row.year).filter((value): value is number => value !== null);
-  const platformCounts = countBy(rows, row => row.platform ?? unknownLabel, unknownLabel);
+  const ratedRows = rows.filter((row): row is VoteRow & { rating: number } => row.rating !== null);
+  const ratings = ratedRows.map(row => row.rating);
+  const years = ratedRows.map(row => row.year).filter((value): value is number => value !== null);
+  const platformCounts = countBy(ratedRows, row => row.platform ?? unknownLabel, unknownLabel);
 
   return {
-    total: rows.length,
+    total: ratedRows.length,
     ratedCount: ratings.length,
     average: ratings.length ? mean(ratings) : 0,
     median: ratings.length ? median(ratings) : 0,

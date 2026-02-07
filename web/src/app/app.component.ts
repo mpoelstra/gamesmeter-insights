@@ -39,7 +39,7 @@ export class AppComponent {
   });
 
   clearCache() {
-    this.insights.reset();
+    this.insights.clearAllLocalData();
     this.router.navigateByUrl('/overview');
   }
 
@@ -59,6 +59,7 @@ export class AppComponent {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) {
+      input.value = '';
       return;
     }
 
@@ -68,9 +69,11 @@ export class AppComponent {
         this.insights.loadCsvText(reader.result, file.name);
         this.router.navigateByUrl('/overview');
       }
+      input.value = '';
     };
     reader.onerror = () => {
       this.insights.reset();
+      input.value = '';
     };
     reader.readAsText(file);
   }
