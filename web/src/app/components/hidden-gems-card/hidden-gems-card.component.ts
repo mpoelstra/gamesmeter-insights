@@ -27,6 +27,7 @@ export class HiddenGemsCardComponent {
   readonly hiddenGems = signal<GemResult[]>([]);
   readonly hotTakes = signal<GemResult[]>([]);
   private readonly lastRunKey = signal<string | null>(null);
+  private readonly resultsCacheKey = 'gamesmeter:hidden-gems';
 
   readonly rows = computed(() => this.insights.allRows());
   readonly status = computed(() => this.insights.status());
@@ -41,19 +42,27 @@ export class HiddenGemsCardComponent {
         return;
       }
       this.lastRunKey.set(key);
-      this.runAnalysis();
+      const cached = this.readResultsCache();
+      if (cached && cached.key === key && (cached.hiddenGems.length || cached.hotTakes.length)) {
+        this.hiddenGems.set(cached.hiddenGems);
+        this.hotTakes.set(cached.hotTakes);
+        return;
+      }
+      this.runAnalysis(false);
     });
   }
 
-  async runAnalysis() {
+  async runAnalysis(force = true) {
     this.isLoading.set(true);
     this.error.set(null);
-    this.hiddenGems.set([]);
-    this.hotTakes.set([]);
+    if (force) {
+      this.hiddenGems.set([]);
+      this.hotTakes.set([]);
+    }
 
     try {
       const pool = this.rows().filter(row => row.title && typeof row.rating === 'number');
-      const rows = pickHybridSample(pool, 60);
+      const rows = pickHybridSample(pool, 100);
 
       const cache = readCache();
       const results: GemResult[] = [];
@@ -91,8 +100,15 @@ export class HiddenGemsCardComponent {
         .filter(item => item.delta <= -0.6)
         .sort((a, b) => a.delta - b.delta)
         .slice(0, 6);
+      const key = `${this.insights.fileName() ?? 'file'}:${this.rows().length}`;
       this.hiddenGems.set(gems);
       this.hotTakes.set(hotTakes);
+      this.writeResultsCache({
+        key,
+        hiddenGems: gems,
+        hotTakes,
+        generatedAt: Date.now(),
+      });
     } catch (err) {
       console.error(err);
       this.error.set(this.i18n.t('hiddenGems.error'));
@@ -108,6 +124,33 @@ export class HiddenGemsCardComponent {
     return `${this.coverProxyBase}/${id}`;
   }
 
+  private readResultsCache(): HiddenGemsCache | null {
+    try {
+      const raw = localStorage.getItem(this.resultsCacheKey);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as Partial<HiddenGemsCache>;
+      if (!Array.isArray(parsed.hiddenGems) || !Array.isArray(parsed.hotTakes) || !parsed.key) {
+        return null;
+      }
+      return {
+        key: parsed.key,
+        generatedAt: parsed.generatedAt ?? 0,
+        hiddenGems: parsed.hiddenGems.map(rehydrateGem),
+        hotTakes: parsed.hotTakes.map(rehydrateGem),
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  private writeResultsCache(cache: HiddenGemsCache) {
+    try {
+      localStorage.setItem(this.resultsCacheKey, JSON.stringify(cache));
+    } catch {
+      // ignore cache write errors
+    }
+  }
+
 }
 
 interface GemResult {
@@ -115,6 +158,24 @@ interface GemResult {
   match: IgdbGame;
   publicScore: number;
   delta: number;
+}
+
+interface HiddenGemsCache {
+  key: string;
+  hiddenGems: GemResult[];
+  hotTakes: GemResult[];
+  generatedAt: number;
+}
+
+function rehydrateGem(gem: GemResult): GemResult {
+  const placed = gem.row.placed ? new Date(gem.row.placed) : null;
+  return {
+    ...gem,
+    row: {
+      ...gem.row,
+      placed,
+    },
+  };
 }
 
 function normalizeTitle(value: string): string {
@@ -194,8 +255,10 @@ function pickHybridSample(rows: VoteRow[], total: number): VoteRow[] {
     return rows;
   }
   const sorted = [...rows].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
-  const top = sorted.slice(0, Math.min(15, sorted.length));
-  const bottom = [...sorted].reverse().slice(0, Math.min(15, sorted.length));
+  const topPool = sorted.slice(0, Math.min(100, sorted.length));
+  const bottomPool = [...sorted].reverse().slice(0, Math.min(100, sorted.length));
+  const top = pickRandom(topPool, Math.min(15, topPool.length));
+  const bottom = pickRandom(bottomPool, Math.min(15, bottomPool.length));
   const middlePool = rows.filter(row => !top.includes(row) && !bottom.includes(row));
   const remaining = Math.max(0, total - top.length - bottom.length);
   const middle = pickRandom(middlePool, remaining);
